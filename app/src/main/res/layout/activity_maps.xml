@@ -29,16 +29,19 @@
         android:layout_marginLeft="393dp"
         android:layout_marginStart="393dp">
 
-        <TextView
-            android:id="@+id/info"
-            android:hint="SSID"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
 
-
-
+            <TextView
+                android:id="@+id/info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>

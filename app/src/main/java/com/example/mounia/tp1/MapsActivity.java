@@ -61,8 +61,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Recuperer le RSSI
         rssi = wifiInfo.getRssi();
 
-        context = getApplicationContext();
-        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
+       // context = getApplicationContext();
+        //relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
 
     }
 
@@ -88,7 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(markerPoly);
         TextView textInfo = (TextView)findViewById(R.id.info);
         textInfo.setText(ssid);
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+       /* mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 //Intent intent1 = new Intent(MapsActivity.this, this.getClass() );
@@ -99,7 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
             }
-        });
+        });*/
 
     }
 
