@@ -1,28 +1,71 @@
 package com.example.mounia.tp1;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    Context context ;
+    RelativeLayout relativeLayout;
+    private WifiManager wifiManager;
+
+    private WifiInfo wifiInfo;
+
+    private String ssid;
+
+    private String bssid;
+
+    private int rssi;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+               .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Initialser le WifiManager
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(getApplicationContext().WIFI_SERVICE);
+
+        // Recuperer les infos du Wifi
+        wifiInfo = wifiManager.getConnectionInfo();
+
+        // Recuperer le SSID
+        ssid = wifiInfo.getSSID();
+
+        // Recuperer le BSSID
+        bssid = wifiInfo.getBSSID();
+
+        // Recuperer le RSSI
+        rssi = wifiInfo.getRssi();
+
+        context = getApplicationContext();
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
+
     }
+
 
 
     /**
@@ -39,8 +82,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Position"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 18));
+        LatLng polytechnique = new LatLng(45.50, -73.61);
+        MarkerOptions markerPoly = new MarkerOptions().position(polytechnique).title("Position").snippet("École polytechnique");
+
+        mMap.addMarker(markerPoly);
+        TextView textInfo = (TextView)findViewById(R.id.info);
+        textInfo.setText(ssid);
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                //Intent intent1 = new Intent(MapsActivity.this, this.getClass() );
+                //intent1.putExtra("markertitle", title);
+                //startActivity(intent1);
+                //String ssid = wifiInfo.getSSID();
+                String ssid = "essai";
+
+
+            }
+        });
+
     }
+
 }
