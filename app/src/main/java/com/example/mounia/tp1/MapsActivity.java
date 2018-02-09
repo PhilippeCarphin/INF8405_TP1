@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -23,8 +25,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    Context context ;
-    RelativeLayout relativeLayout;
+    //Context context;
+    //RelativeLayout relativeLayout;
+
     private WifiManager wifiManager;
 
     private WifiInfo wifiInfo;
@@ -36,14 +39,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int rssi;
 
 
+    private AdaptateurListePersonnalisee adaptateur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_maps);
+
         //Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                .findFragmentById(R.id.map);
+
+       // Fragment fragement = (Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment_personnalise);
+
         mapFragment.getMapAsync(this);
 
         // Initialser le WifiManager
@@ -61,9 +71,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Recuperer le RSSI
         rssi = wifiInfo.getRssi();
 
-       // context = getApplicationContext();
-        //relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
+       if(findViewById(R.id.affichage)!=null)
+       {
 
+           if(savedInstanceState!=null)
+           {
+               return;
+           }
+           FragmentPersonnalise fragmentPersonnalise= new FragmentPersonnalise();
+           getSupportFragmentManager().beginTransaction().add(R.id.affichage, fragmentPersonnalise).commit();
+
+       }
     }
 
 
@@ -86,8 +104,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerPoly = new MarkerOptions().position(polytechnique).title("Position").snippet("École polytechnique");
 
         mMap.addMarker(markerPoly);
-        TextView textInfo = (TextView)findViewById(R.id.info);
-        textInfo.setText(ssid);
+       // TextView textInfo = (TextView)findViewById(R.id.info);
+        //textInfo.setText(ssid);
        /* mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -96,11 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //startActivity(intent1);
                 //String ssid = wifiInfo.getSSID();
                 String ssid = "essai";
-
-
             }
         });*/
-
     }
-
 }

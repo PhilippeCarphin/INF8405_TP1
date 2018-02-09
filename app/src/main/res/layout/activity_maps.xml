@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
@@ -16,49 +15,18 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="200dp"
         android:layout_marginRight="200dp"
+        android:layout_weight="2"
         android:apiKey="@string/mapkey" />
 
     <RelativeLayout
+        android:id="@+id/affichage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="393dp"
-        android:layout_marginStart="393dp">
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="400dp"
+        android:layout_weight="1">
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>
-
-<!--
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent" >
-
-<com.google.android.maps.MapView
-    android:id="@+id/map"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:apiKey="@string/mapkey"
-    android:clickable="true"
-    />
-
-</RelativeLayout>
--->
