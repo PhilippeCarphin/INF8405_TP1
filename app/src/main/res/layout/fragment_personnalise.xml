@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragmentPersonnalise"
     android:layout_width="match_parent"
@@ -6,16 +6,5 @@
     android:orientation="vertical"
     tools:context="com.example.mounia.tp1.FragmentPersonnalise">
 
-
-    <ListView
-        android:id="@+id/myListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-    </ListView>
-
-
-
-</LinearLayout>
+</ListView>
 

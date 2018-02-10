@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,24 +23,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , FragmentPersonnalise.OnNewItemSelectedListener{
 
     private GoogleMap mMap;
-    //Context context;
-    //RelativeLayout relativeLayout;
-
     private WifiManager wifiManager;
-
     private WifiInfo wifiInfo;
-
     private String ssid;
-
     private String bssid;
-
     private int rssi;
 
-
-    private AdaptateurListePersonnalisee adaptateur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Recuperer le RSSI
         rssi = wifiInfo.getRssi();
+
 
        if(findViewById(R.id.affichage)!=null)
        {
@@ -116,5 +109,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 String ssid = "essai";
             }
         });*/
+    }
+
+    @Override
+    public void onNewItemPicked(int position) {
+
+        Toast.makeText(this, "Clicked" +position, Toast.LENGTH_LONG).show();
+
     }
 }

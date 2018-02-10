@@ -42,7 +42,7 @@ public class AdaptateurListePersonnalisee extends ArrayAdapter<String> {
         View vueDuneLigne = inflater.inflate(R.layout.fragment_personnalise, parent, false);
 
         // Récupérer les vues image et texte depuis leur xml
-       /* ImageView imageView = vueDuneLigne.findViewById(R.id.symbol);
+        /*ImageView imageView = vueDuneLigne.findViewById(R.id.symbol);
         TextView textView = vueDuneLigne.findViewById(R.id.info);
 
         // Affecter le texte approprié au textview
