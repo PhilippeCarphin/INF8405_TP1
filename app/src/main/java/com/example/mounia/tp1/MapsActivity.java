@@ -23,7 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , FragmentPersonnalise.OnNewItemSelectedListener{
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private WifiManager wifiManager;
@@ -64,7 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         rssi = wifiInfo.getRssi();
 
 
-       if(findViewById(R.id.affichage)!=null)
+      /* if(findViewById(R.id.affichage)!=null)
        {
 
            if(savedInstanceState!=null)
@@ -74,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
            FragmentPersonnalise fragmentPersonnalise= new FragmentPersonnalise();
            getSupportFragmentManager().beginTransaction().add(R.id.affichage, fragmentPersonnalise).commit();
 
-       }
+       }*/
     }
 
 
@@ -97,9 +97,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerPoly = new MarkerOptions().position(polytechnique).title("Position").snippet("École polytechnique");
 
         mMap.addMarker(markerPoly);
-       // TextView textInfo = (TextView)findViewById(R.id.info);
-        //textInfo.setText(ssid);
-       /* mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        //TextView textInfo = (TextView)findViewById(R.id.info);
+       // textInfo.setText(bssid);
+       /*mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 //Intent intent1 = new Intent(MapsActivity.this, this.getClass() );
@@ -111,10 +111,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });*/
     }
 
-    @Override
+    /*@Override
     public void onNewItemPicked(int position) {
 
         Toast.makeText(this, "Clicked" +position, Toast.LENGTH_LONG).show();
 
-    }
+    }*/
 }
