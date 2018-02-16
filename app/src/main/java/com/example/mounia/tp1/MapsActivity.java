@@ -23,6 +23,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , FragmentPersonnalise.OnNewItemSelectedListener{
 
     private GoogleMap mMap;
@@ -31,6 +34,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String ssid;
     private String bssid;
     private int rssi;
+    ArrayList<PointAcces> pointsAcces;
 
 
     @Override
@@ -77,8 +81,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        }
     }
 
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -111,10 +113,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });*/
     }
 
+    public ArrayList<PointAcces> detecterPointsAcces()
+    {
+        // TODO : détecter les points d'accès à proximité et les renvoyer
+        // ...
+
+        return null;
+    }
+
+    public void placerMarkersSurCarte()
+    {
+        // TODO : placer des markers pour les points d'accès détecter sur la carte
+        // ...
+    }
+
     @Override
-    public void onNewItemPicked(int position) {
+    public void onNewItemPicked(int position)
+    {
+        // TODO : Remplacer le fragment actuel (la liste) par le 2e fragment
+        // ...
 
         Toast.makeText(this, "Clicked" +position, Toast.LENGTH_LONG).show();
-
     }
 }
