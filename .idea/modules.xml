@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TP1.iml" filepath="$PROJECT_DIR$/TP1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/INF8405_TP1.iml" filepath="$PROJECT_DIR$/INF8405_TP1.iml" />
+      <module fileurl="file://C:\workspace_info_mobile\INF8405_TP1\TP1.iml" filepath="C:\workspace_info_mobile\INF8405_TP1\TP1.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
