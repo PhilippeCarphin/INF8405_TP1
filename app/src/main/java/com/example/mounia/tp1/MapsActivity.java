@@ -1,82 +1,63 @@
 package com.example.mounia.tp1;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        FragmentListePointsAcces.OnPointAccesSelectedListener
+{
     private GoogleMap mMap;
     private WifiManager wifiManager;
-    private WifiInfo wifiInfo;
-    private String ssid;
-    private String bssid;
-    private int rssi;
-    ArrayList<PointAcces> pointsAcces;
+    private ArrayList<PointAcces> pointsAcces;
+    private FragmentManager fragmentManager;
+
+    // Les deux fragments dynamiques qui peuvent se remplacer
+    private FragmentListePointsAcces fragmentListePointsAcces;
+    private FragmentDetailsPointAcces fragmentDetailsPointAcces;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_maps);
 
-        //Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-               .findFragmentById(R.id.map);
-
-       // Fragment fragement = (Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment_personnalise);
-
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Initialser le WifiManager
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(getApplicationContext().WIFI_SERVICE);
+        // Initialiser les fragments dynamiques
+        fragmentListePointsAcces = new FragmentListePointsAcces();
+        fragmentDetailsPointAcces = new FragmentDetailsPointAcces();
 
-        // Recuperer les infos du Wifi
-        wifiInfo = wifiManager.getConnectionInfo();
+        // Initialiser le fragment manager
+        fragmentManager = getSupportFragmentManager();
 
-        // Recuperer le SSID
-        ssid = wifiInfo.getSSID();
+        // Placer dynamiquement le fragment liste de points d'acces
+        // pour qu'il puisse aussi etre remplace dynamiquement.
+        if (findViewById(R.id.conteneur_fragment_dynamique) != null)
+            fragmentManager.beginTransaction().add(R.id.conteneur_fragment_dynamique, fragmentListePointsAcces).commit();
 
-        // Recuperer le BSSID
-        bssid = wifiInfo.getBSSID();
+        // Initialiser le WifiManager
+        wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
 
-        // Recuperer le RSSI
-        rssi = wifiInfo.getRssi();
+        // Quand l'application se lance, les points d'accès à proximité sont détectés
+        this.pointsAcces = detecterPointsAcces();
 
-
-      /* if(findViewById(R.id.affichage)!=null)
-       {
-
-           if(savedInstanceState!=null)
-           {
-               return;
-           }
-           FragmentPersonnalise fragmentPersonnalise= new FragmentPersonnalise();
-           getSupportFragmentManager().beginTransaction().add(R.id.affichage, fragmentPersonnalise).commit();
-
-       }*/
+        // Ces points d'accès doivent être placés sur la carte.
+        placerMarkersSurCarte();
     }
 
     /**
@@ -89,7 +70,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap)
+    {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
@@ -97,18 +79,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerPoly = new MarkerOptions().position(polytechnique).title("Position").snippet("École polytechnique");
 
         mMap.addMarker(markerPoly);
-        //TextView textInfo = (TextView)findViewById(R.id.info);
-       // textInfo.setText(bssid);
-       /*mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                //Intent intent1 = new Intent(MapsActivity.this, this.getClass() );
-                //intent1.putExtra("markertitle", title);
-                //startActivity(intent1);
-                //String ssid = wifiInfo.getSSID();
-                String ssid = "essai";
-            }
-        });*/
+
+        // TODO : detecter plusieurs hotspots
+        // ...
+    }
+
+    public void remplacerFragment(Fragment remplacant, Bundle donneesATransmettre, int idConteneurFragment)
+    {
+        // Passer les arguments au nouveau fragment (remplacant)
+        remplacant.setArguments(donneesATransmettre);
+
+        // Remplacer l'ancien fragment par le remplacant
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(idConteneurFragment, remplacant);
+
+        // Ajouter la transaction sur la pile de retour pour permettre
+        // a l'usager de retourner a l'etat d'avant la transaction.
+        // Note : aucun argument n'est a passer ici.
+        fragmentTransaction.addToBackStack(null);
+
+        // Appliquer les changements
+        fragmentTransaction.commit();
     }
 
     public ArrayList<PointAcces> detecterPointsAcces()
@@ -116,15 +107,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // TODO : détecter les points d'accès à proximité et les renvoyer
         // ...
 
-        return null;
+        // Pour commencer, faire le test pour une seule détection
+        ArrayList<PointAcces> pointAccesDetectes = new ArrayList<>();
+        PointAcces pointAcces = new PointAcces(wifiManager.getConnectionInfo());
+        pointAccesDetectes.add(pointAcces);
+
+        return pointAccesDetectes;
     }
 
     public void placerMarkersSurCarte()
     {
-        // TODO : placer des markers pour les points d'accès détecter sur la carte
+        // TODO : placer des markers pour les points d'accès détectés sur la carte
         // ...
     }
 
+    @Override
+    public void onPointAccesSelected(int position) {
+        // Test
+        Toast.makeText(this, "Point Acces " + position + " selectionne", Toast.LENGTH_LONG);
 
-
+        // TODO next
+        // ...
+    }
 }
