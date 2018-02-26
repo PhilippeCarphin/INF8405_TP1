@@ -39,6 +39,8 @@
             android:value="AIzaSyDbBrRn7mDvpAHEgflKOzr_xmZSk7bn3Wc" />
 
         <activity
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|keyboardHidden"
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>

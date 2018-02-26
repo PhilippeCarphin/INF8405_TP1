@@ -3,9 +3,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -15,16 +18,16 @@ import java.util.List;
 
 public class FragmentListePointsAcces extends ListFragment
 {
-    String[] text = new String[] {
-            "Café",
-            "Hotel",
-            "Poly",
-    };
-
-    int[] image = new int[] {
+    private int[] image = new int[] {
             R.mipmap.coffe_symbol,
             R.mipmap.hotel_symbol,
             R.mipmap.wifi_symbol
+    };
+
+    private String[] text = new String[] {
+            "Café",
+            "Hotel",
+            "Poly",
     };
 
     private Activity activity;
@@ -39,7 +42,7 @@ public class FragmentListePointsAcces extends ListFragment
         mCallback.onPointAccesSelected(positionItemClique);
     }
 
-    OnPointAccesSelectedListener mCallback;
+    private OnPointAccesSelectedListener mCallback;
 
     // Container Activity must implement this interface
     public interface OnPointAccesSelectedListener {
@@ -69,8 +72,15 @@ public class FragmentListePointsAcces extends ListFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
 
+        // Note: If your fragment is a subclass of ListFragment, the default
+        // implementation returns a ListView from onCreateView()
+
+        // La conversion en ListView fait crasher l'app
+        //ListView listView = (ListView) super.onCreateView(inflater, container, savedInstanceState);
+
+        /*
+        List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < 3; i++) {
             HashMap<String, String> hm = new HashMap<String, String>();
             hm.put("image", Integer.toString(image[i]));
@@ -84,15 +94,11 @@ public class FragmentListePointsAcces extends ListFragment
         // Ids of views in listview_layout
         int[] to = {R.id.texte, R.id.image};
 
-        SimpleAdapter adapter = new SimpleAdapter(getActivity().getBaseContext(), aList, R.layout.item_view, from, to);
+        SimpleAdapter adapter = new SimpleAdapter(activity.getBaseContext(), aList, R.layout.item_view, from, to);
         setListAdapter(adapter);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        */
 
-        // Test
-        //SimpleAdapter adapter = new SimpleAdapter(activity.getBaseContext(), aList, R.layout.item_view, from, to);
-        //ListView listView = (ListView) inflater.inflate(R.id.conteneur_fragment_dynamique, container, false);
-        //listView.setAdapter(adapter);
-        //return null;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     // Called when the fragment's activity has been created and this fragment's view hierarchy
@@ -101,6 +107,11 @@ public class FragmentListePointsAcces extends ListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        // Populate list with our static array of titles.
+        //HashMap<>
+        //ListAdapter arrayAdapter = new ArrayAdapter<String>(getActivity(), liste, )
+        //setListAdapter(arrayAdapter);
     }
 
     @Override

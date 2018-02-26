@@ -45,19 +45,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Initialiser le fragment manager
         fragmentManager = getSupportFragmentManager();
 
-        // Placer dynamiquement le fragment liste de points d'acces
-        // pour qu'il puisse aussi etre remplace dynamiquement.
-        if (findViewById(R.id.conteneur_fragment_dynamique) != null)
-            fragmentManager.beginTransaction().add(R.id.conteneur_fragment_dynamique, fragmentListePointsAcces).commit();
-
         // Initialiser le WifiManager
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
-
-        // Quand l'application se lance, les points d'accès à proximité sont détectés
-        this.pointsAcces = detecterPointsAcces();
-
-        // Ces points d'accès doivent être placés sur la carte.
-        placerMarkersSurCarte();
     }
 
     /**
@@ -80,8 +69,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.addMarker(markerPoly);
 
-        // TODO : detecter plusieurs hotspots
+        // Quand l'application se lance, les points d'accès à proximité sont détectés
+        this.pointsAcces = detecterPointsAcces();
+
+        // Ces points d'accès doivent être placés sur la carte.
+        placerMarkersSurCarte();
+
+        // TODO
         // ...
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // NB: Once the activity reaches the resumed state, you can freely add and remove fragments
+        // to the activity. Thus, only while the activity is in the resumed state can the
+        // lifecycle of a fragment change independently.
+        // However, when the activity leaves the resumed state, the fragment again is pushed
+        // through its lifecycle by the activity.
+
+        // Placer dynamiquement le fragment liste de points d'acces
+        // pour qu'il puisse aussi etre remplace dynamiquement.
+        if (findViewById(R.id.conteneur_fragment_dynamique) != null)
+            fragmentManager.beginTransaction().add(R.id.conteneur_fragment_dynamique, fragmentListePointsAcces).commit();
     }
 
     public void remplacerFragment(Fragment remplacant, Bundle donneesATransmettre, int idConteneurFragment)
@@ -97,6 +108,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // a l'usager de retourner a l'etat d'avant la transaction.
         // Note : aucun argument n'est a passer ici.
         fragmentTransaction.addToBackStack(null);
+
+        // Tip: For each fragment transaction, you can apply a transition animation,
+        // by calling setTransition() before you commit.
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 
         // Appliquer les changements
         fragmentTransaction.commit();
