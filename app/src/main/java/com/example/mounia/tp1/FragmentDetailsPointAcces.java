@@ -1,6 +1,7 @@
 package com.example.mounia.tp1;
 
 import android.content.Context;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,17 +13,16 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FragmentDetailsPointAcces.OnFragmentInteractionListener} interface
+ * {@link OnDetailsInteractionListener} interface
  * to handle interaction events.
  */
 public class FragmentDetailsPointAcces extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private OnDetailsInteractionListener mListener;
 
     public FragmentDetailsPointAcces() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,21 +32,21 @@ public class FragmentDetailsPointAcces extends Fragment {
         return textView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+//    // TODO: Rename method, update argument and hook method into UI event
+//    public void onButtonPressed(Uri uri) {
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction(uri);
+//        }
+//    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnDetailsInteractionListener) {
+            mListener = (OnDetailsInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnDetailsInteractionListener");
         }
     }
 
@@ -66,8 +66,17 @@ public class FragmentDetailsPointAcces extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface OnDetailsInteractionListener {
+
+        // Finalement, la fonctionnalité partager sert à envoyer l' information
+        // d'un hotspot (SSID,BSSID,etc...) à un de nos contacts téléphoniques ou
+        // à un contact d'une autre app ( facebook, whatsapp, etc...).
+        void partager(int idPointAcces);
+
+        void ajouterAuxFavoris(int idPointAcces);
+
+        void enleverDesFavoris(int idPointAcces);
+
+        Path.Direction obtenirDirection(int idPointAcces);
     }
 }

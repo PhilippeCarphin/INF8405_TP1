@@ -1,5 +1,6 @@
 package com.example.mounia.tp1;
 
+import android.graphics.Path;
 import android.net.wifi.WifiManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,7 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        FragmentListePointsAcces.OnPointAccesSelectedListener
+        FragmentListePointsAcces.OnPointAccesSelectedListener, FragmentDetailsPointAcces.OnDetailsInteractionListener
 {
     private GoogleMap mMap;
     private WifiManager wifiManager;
@@ -139,9 +140,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onPointAccesSelected(int position) {
         // Test
-        Toast.makeText(this, "Point Acces " + position + " selectionne", Toast.LENGTH_LONG);
+        Toast.makeText(this, "Point Acces " + position + " selectionne", Toast.LENGTH_LONG).show();
 
         // TODO next
         // ...
+        remplacerFragment(this.fragmentDetailsPointAcces, null, R.id.conteneur_fragment_dynamique);
+    }
+
+    // Finalement, la fonctionnalité partager sert à envoyer l' information
+    // d'un hotspot (SSID,BSSID,etc...) à un de nos contacts téléphoniques ou
+    // à un contact d'une autre app ( facebook, whatsapp, etc...).
+    @Override
+    public void partager(int idPointAcces) {
+        // TODO ...
+        // Déjà réalisé par Mounia...
+    }
+
+    @Override
+    public void ajouterAuxFavoris(int idPointAcces) {
+        // TODO ...
+        // @Mounia
+    }
+
+    // Juste pour permettre d'enlever, même si ce n'est pas dans l'énoncé
+    @Override
+    public void enleverDesFavoris(int idPointAcces) {
+        // TODO ...
+        // @Mounia
+    }
+
+    @Override
+    public Path.Direction obtenirDirection(int idPointAcces) {
+        // TODO ...
+        // @Philippe
+        return null;
     }
 }

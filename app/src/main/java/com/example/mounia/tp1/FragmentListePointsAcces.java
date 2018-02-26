@@ -3,12 +3,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -31,22 +29,23 @@ public class FragmentListePointsAcces extends ListFragment
     };
 
     private Activity activity;
+    private ListView listFragmentListView;
+    private OnPointAccesSelectedListener mCallback;
 
     public FragmentListePointsAcces() {
         // Required empty public constructor
     }
 
+    // Ne sert a rien !?
     @Override
-    public void onListItemClick(ListView listeCliquee, View itemClique, int positionItemClique, long idRangeeItemClique) {
+    public void onListItemClick(ListView l, View v, int positionItemClique, long id) {
         // Send the event to the host activity
         mCallback.onPointAccesSelected(positionItemClique);
     }
 
-    private OnPointAccesSelectedListener mCallback;
-
     // Container Activity must implement this interface
     public interface OnPointAccesSelectedListener {
-        public void onPointAccesSelected(int position);
+        void onPointAccesSelected(int position);
     }
 
     @Override
@@ -66,9 +65,7 @@ public class FragmentListePointsAcces extends ListFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -76,10 +73,13 @@ public class FragmentListePointsAcces extends ListFragment
         // Note: If your fragment is a subclass of ListFragment, the default
         // implementation returns a ListView from onCreateView()
 
-        // La conversion en ListView fait crasher l'app
-        //ListView listView = (ListView) super.onCreateView(inflater, container, savedInstanceState);
 
-        /*
+        // TODO : Recuperer une liste de SSID qui se trouve dans le rayon de proximite
+        // au lieu de cette liste codee a la main. Une methode statique de l'activite
+        // qui renvoie la liste des points d'acces a proximite ou detectes peut peut-etre
+        // faire l'affaire
+        // ...
+
         List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < 3; i++) {
             HashMap<String, String> hm = new HashMap<String, String>();
@@ -96,7 +96,6 @@ public class FragmentListePointsAcces extends ListFragment
 
         SimpleAdapter adapter = new SimpleAdapter(activity.getBaseContext(), aList, R.layout.item_view, from, to);
         setListAdapter(adapter);
-        */
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -108,10 +107,17 @@ public class FragmentListePointsAcces extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Populate list with our static array of titles.
-        //HashMap<>
-        //ListAdapter arrayAdapter = new ArrayAdapter<String>(getActivity(), liste, )
-        //setListAdapter(arrayAdapter);
+        // Recuperer la ListView associee a ce fragment
+        listFragmentListView = getListView();
+
+        // Associer un observateur aux selections d'items de la liste
+        listFragmentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Passer le message a l'activite parent
+                mCallback.onPointAccesSelected(position);
+            }
+        });
     }
 
     @Override
