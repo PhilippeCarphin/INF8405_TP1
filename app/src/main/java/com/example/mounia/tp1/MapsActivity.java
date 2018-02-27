@@ -139,11 +139,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onPointAccesSelected(int position) {
-        // Test
-        Toast.makeText(this, "Point Acces " + position + " selectionne", Toast.LENGTH_LONG).show();
-
-        // TODO next
-        // ...
         remplacerFragment(this.fragmentDetailsPointAcces, null, R.id.conteneur_fragment_dynamique);
     }
 
@@ -154,12 +149,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void partager(int idPointAcces) {
         // TODO ...
         // Déjà réalisé par Mounia...
+        Toast.makeText(this, "Partager point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void ajouterAuxFavoris(int idPointAcces) {
         // TODO ...
         // @Mounia
+        Toast.makeText(this, "Ajouter point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
     }
 
     // Juste pour permettre d'enlever, même si ce n'est pas dans l'énoncé
@@ -167,6 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void enleverDesFavoris(int idPointAcces) {
         // TODO ...
         // @Mounia
+        Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
     }
 
     @Override

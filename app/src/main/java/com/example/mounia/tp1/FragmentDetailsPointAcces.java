@@ -1,5 +1,6 @@
 package com.example.mounia.tp1;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Path;
 import android.net.Uri;
@@ -8,6 +9,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -20,16 +24,10 @@ public class FragmentDetailsPointAcces extends Fragment {
 
     private OnDetailsInteractionListener mListener;
 
+    private Activity activity;
+
     public FragmentDetailsPointAcces() {
         // Required empty public constructor
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-        return textView;
     }
 
 //    // TODO: Rename method, update argument and hook method into UI event
@@ -39,15 +37,63 @@ public class FragmentDetailsPointAcces extends Fragment {
 //        }
 //    }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if(context instanceof Activity)
+            activity = (Activity) context;
+
         if (context instanceof OnDetailsInteractionListener) {
-            mListener = (OnDetailsInteractionListener) context;
+            mListener = (OnDetailsInteractionListener) activity;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(activity.toString()
                     + " must implement OnDetailsInteractionListener");
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //TextView textView = new TextView(getActivity());
+        //textView.setText(R.string.hello_blank_fragment);
+        //return textView;
+
+        RelativeLayout relativeLayout = new RelativeLayout(getActivity());
+
+        // Ajouter la vue du ssid a la vue du fragment
+        TextView ssidTextView = new TextView(activity);
+        ssidTextView.setText("SSID : ");
+        relativeLayout.addView(ssidTextView);
+
+        Button boutonPartager = new Button(activity);
+        boutonPartager.setText("Partager");
+        boutonPartager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.partager(15); // essai
+            }
+        });
+        relativeLayout.addView(boutonPartager);
+
+        // TODO : Ajouter les autres vues
+        // ...
+
+        return relativeLayout;
+    }
+
+    private View detailsFragmentView;
+
+    // Called when the fragment's activity has been created and this fragment's view hierarchy
+    // instantiated. It can be used to do final initialization once these pieces are in place,
+    // such as retrieving views or restoring state.
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // Recuperer la vue associee a ce fragment
+        detailsFragmentView = getView();
+
+        // TODO ...
     }
 
     @Override
