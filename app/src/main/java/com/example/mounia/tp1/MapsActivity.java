@@ -1,6 +1,8 @@
 package com.example.mounia.tp1;
 
 import android.graphics.Path;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         FragmentListePointsAcces.OnPointAccesSelectedListener, FragmentDetailsPointAcces.OnDetailsInteractionListener
@@ -52,7 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
 
         // Quand l'application se lance, les points d'accès à proximité sont détectés
-        this.pointsAcces = detecterPointsAcces();
+        this.pointsAcces = createDummyAccessPoints();
     }
 
     /**
@@ -118,6 +121,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Appliquer les changements
         fragmentTransaction.commit();
+    }
+
+    public PointAcces PointAccesMaker(String SSID, String BSSID, boolean passwordProtected){
+        PointAcces pa = new PointAcces(null);
+        pa.assignerAcces(true);
+        pa.assignerBSSID(BSSID);
+        pa.assignerSSID(SSID);
+        return pa;
+    }
+
+    public ArrayList<PointAcces> createDummyAccessPoints(){
+        List<ScanResult> sr = wifiManager.getScanResults();
+        ArrayList<PointAcces> pointsAcces = new ArrayList<>(10);
+
+        if(sr.size() == 0){
+            pointsAcces.add(PointAccesMaker("It hurts when IP", "ab:12:cd:34:56:78", true));
+            pointsAcces.add(PointAccesMaker("Patate Poil", "ab:12:12:34:56:78", true));
+            pointsAcces.add(PointAccesMaker("Un four sur le toit", "12:12:cd:34:56:78", true));
+            pointsAcces.add(PointAccesMaker("Aye caramba!", "ab:12:cd:34:99:99", true));
+            pointsAcces.add(PointAccesMaker("I am the danger", "de:ad:be:ef:56:78", true));
+        } else {
+            for(ScanResult r : sr){
+                pointsAcces.add(PointAccesMaker(r.SSID, r.BSSID, true));
+            }
+        }
+
+        for( PointAcces pa : pointsAcces){
+            Log.i("wifi", pa.toString());
+        }
+        return pointsAcces;
     }
 
     public ArrayList<PointAcces> detecterPointsAcces()

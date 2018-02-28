@@ -44,6 +44,16 @@ public class PointAcces
         compteur++;
         this.id = compteur;
 
+        // Intercepter un wifi info null et retourner.  Possiblement on devrait changer le constructeur
+        // Selon ce que j'ai lu, c'est wifiManager.getScanResults() qu'il faudrait utiliser.
+        // ref : https://developer.android.com/reference/android/net/wifi/WifiManager.html#getScanResults()
+        if(wifiInfo == null){
+            this.ssid = "ssid";
+            this.bssid = "bssid";
+            this.avecMotDePasse = true;
+            return;
+        }
+
         // Initialiser le nom du reseau, l'adresse MAC et l'intensite du signal recu
         this.ssid  = wifiInfo.getSSID();
         this.bssid = wifiInfo.getBSSID();
@@ -95,4 +105,6 @@ public class PointAcces
     public void assignerRSSI(int rssi) { this.rssi = rssi; }
 
     public int obtenirRSSI() { return this.rssi; }
+
+    public String toString() { return "SSID=" + this.ssid + ", BSSID=" + this.bssid ;}
 }
