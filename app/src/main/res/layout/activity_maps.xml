@@ -5,25 +5,53 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".MapsActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:text="Battery "
+        android:textSize="16dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textBattery"/>
+
+    <Button
+        android:id="@+id/favoris"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FAVORIS" />
+
+    <TextView
+        android:layout_width="10dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textFavoris"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:layout_marginTop="40dp">
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0px"
-        android:layout_height="490dp"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="40dp"
         android:layout_weight="2"
         android:apiKey="@string/mapkey" />
 
     <include
-        layout="@layout/vue_fragment_dynamique"
-         />
+        layout="@layout/vue_fragment_dynamique" />
+
+    </LinearLayout>
+
 
     <!--
     <fragment

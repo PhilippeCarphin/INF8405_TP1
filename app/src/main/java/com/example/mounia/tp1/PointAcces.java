@@ -13,6 +13,9 @@ public class PointAcces
     private int id;
     private static int compteur = 0;
 
+    // Permet de savoir si ce point d'acces est un favori directement
+    private boolean estFavori;
+
     // Le nom du réseau	écrit dans un format simple.
     private String ssid;
 
@@ -38,13 +41,25 @@ public class PointAcces
     {
         // TODO : Inititialiser le id avec un outil tel que UUID
         // ...
-        compteur++;
-        this.id = compteur;
+        this.id = compteur++;
+
+        // Intercepter un wifi info null et retourner.  Possiblement on devrait changer le constructeur
+        // Selon ce que j'ai lu, c'est wifiManager.getScanResults() qu'il faudrait utiliser.
+        // ref : https://developer.android.com/reference/android/net/wifi/WifiManager.html#getScanResults()
+        if(wifiInfo == null){
+            this.ssid = "ssid";
+            this.bssid = "bssid";
+            this.avecMotDePasse = true;
+            return;
+        }
 
         // Initialiser le nom du reseau, l'adresse MAC et l'intensite du signal recu
         this.ssid  = wifiInfo.getSSID();
         this.bssid = wifiInfo.getBSSID();
         this.rssi  = wifiInfo.getRssi();
+
+        // Initialement, ce n'est pas un favori
+        estFavori = false;
 
         // TODO : Initialiser la variable pour le mecanisme d'authentification
         // ...
@@ -53,27 +68,14 @@ public class PointAcces
         // ...
     }
 
-    // Finalement, la fonctionnalité partager sert à envoyer l' information
-    // d'un hotspot (SSID,BSSID,etc...) à un de nos contacts téléphoniques ou
-    // à un contact d'une autre app ( facebook, whatsapp, etc...).
-    public void partager()
-    {
-        // TODO ...
-        // Déjà réalisé par Mounia...
-    }
+    public int obtenirID() { return this.id; }
 
-    public void ajouterAuxFavoris()
-    {
-        // TODO ...
-        // Tache de Mounia...
-    }
+    public boolean estFavori() { return estFavori; }
 
-    // Juste pour permettre d'enlever des favoris, même ce n'est pas dans l'énoncé
-    public void enleverDesFavoris()
-    {
-        // TODO ...
-        // Tache de Mounia...
-    }
+    public void ajouterAuxFavoris() { estFavori = true; }
+
+    // Juste pour permettre d'enlever des favoris, même si ce n'est pas dans l'énoncé
+    public void enleverDesFavoris() { estFavori = false; }
 
     public Path.Direction obtenirDirection()
     {
@@ -89,7 +91,7 @@ public class PointAcces
 
     public void assignerAcces(boolean avecMotDePasse) { this.avecMotDePasse = avecMotDePasse; }
 
-    public boolean obtenirAcces() { return this.avecMotDePasse; }
+    public boolean estProtegeParMotDePasse() { return this.avecMotDePasse; }
 
     public void assignerSSID(String SSID) { this.ssid = SSID; }
 
@@ -102,4 +104,6 @@ public class PointAcces
     public void assignerRSSI(int rssi) { this.rssi = rssi; }
 
     public int obtenirRSSI() { return this.rssi; }
+
+    public String toString() { return "SSID=" + this.ssid + ", BSSID=" + this.bssid ;}
 }
