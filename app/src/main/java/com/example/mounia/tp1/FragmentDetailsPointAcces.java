@@ -82,7 +82,35 @@ public class FragmentDetailsPointAcces extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // La vue a renvoyer par cette methode
-        RelativeLayout vuePrincipaleFragment = new RelativeLayout(activity);
+        // RelativeLayout vuePrincipaleFragment = new RelativeLayout(activity);
+
+
+        // J'ai changé pour linearLayout juste pour voir les infos pour gosser.  Creer trois vues
+        LinearLayout vuePrincipaleFragment = new LinearLayout(activity);
+        vuePrincipaleFragment.setOrientation(LinearLayout.VERTICAL);
+        vuePrincipaleFragment.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        vuePrincipaleFragment.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT)
+        );
+
+        LinearLayout vueInfo = new LinearLayout(activity);
+        vueInfo.setBackgroundColor(0xffaabbcc);
+        vueInfo.setOrientation(LinearLayout.VERTICAL);
+        vueInfo.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+        );
+        vuePrincipaleFragment.addView(vueInfo);
+
+        LinearLayout vueBoutons = new LinearLayout(activity);
+        vueBoutons.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        vueBoutons.setOrientation(LinearLayout.VERTICAL);
+        vueInfo.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+        );
+        vuePrincipaleFragment.addView(vueBoutons);
 
         // NB: Si le point d'acces n'a pas ete assigne avant cette methode
         // alors il faut que ca crash
@@ -91,19 +119,19 @@ public class FragmentDetailsPointAcces extends Fragment {
 
         // Ajouter la vue du ssid
         vueSSID = new TextView(activity);
-        vuePrincipaleFragment.addView(vueSSID);
+        vueInfo.addView(vueSSID);
 
         // Ajouter la vue du bssid
         vueBSSID = new TextView(activity);
-        vuePrincipaleFragment.addView(vueBSSID);
+        vueInfo.addView(vueBSSID);
 
         // Ajouter la vue du rssi
         vueRSSI = new TextView(activity);
-        vuePrincipaleFragment.addView(vueRSSI);
+        vueInfo.addView(vueRSSI);
 
         // Ajouter la vue pour afficher si c'est avec ou sans mot de passe
         vueAcces = new TextView(activity);
-        vuePrincipaleFragment.addView(vueAcces);
+        vueInfo.addView(vueAcces);
 
         // Assigner les infos du point d'acces
         mettreVuesAJour();
@@ -117,7 +145,7 @@ public class FragmentDetailsPointAcces extends Fragment {
                 mListener.ajouterAuxFavoris(1); // essai
             }
         });
-        vuePrincipaleFragment.addView(vueAjouterAuxFavoris);
+        vueBoutons.addView(vueAjouterAuxFavoris);
 
         // Initialiser la vue pour partager
         vuePartager = new Button(activity);
@@ -128,7 +156,7 @@ public class FragmentDetailsPointAcces extends Fragment {
                 mListener.partager(1); // essai
             }
         });
-        vuePrincipaleFragment.addView(vuePartager);
+        vueBoutons.addView(vuePartager);
 
         // Initialiser la vue pour obtenir un chemin parmi ceux les plus courts
         // entre la position actuelle et ce point d'acces
@@ -140,7 +168,7 @@ public class FragmentDetailsPointAcces extends Fragment {
                 mListener.obtenirDirection(1); // essai
             }
         });
-        vuePrincipaleFragment.addView(vueObtenirDirection);
+        vueBoutons.addView(vueObtenirDirection);
 
         // TODO : Ajouter les autres vues
         // ...
