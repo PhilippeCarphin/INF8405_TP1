@@ -74,9 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        registerReceiver(wifiScanReceiver,
-                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifiManager.startScan();
+
         // Quand l'application se lance, les points d'accès à proximité sont détectés
         this.pointsAcces = createAccessPoints();
         // placerMarkersSurCarte();
@@ -138,7 +136,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Ajouter la transaction sur la pile de retour pour permettre
         // a l'usager de retourner a l'etat d'avant la transaction.
         // Note : aucun argument n'est a passer ici.
-        fragmentTransaction.addToBackStack(null);
+
+
+        FragmentManager fm = fragmentManager;
+
+        if(fm.getBackStackEntryCount() != 0) {
+            List<Fragment> stack = fm.getFragments();
+            Fragment top = stack.get(stack.size() - 1);
+            Log.i("BACKSTACK", "Found backstack entry " + top.toString());
+        } else {
+            fragmentTransaction.addToBackStack(null);
+        }
 
         // Tip: For each fragment transaction, you can apply a transition animation,
         // by calling setTransition() before you commit.
