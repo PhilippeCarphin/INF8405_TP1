@@ -41,8 +41,7 @@ public class PointAcces
     {
         // TODO : Inititialiser le id avec un outil tel que UUID
         // ...
-        compteur++;
-        this.id = compteur;
+        this.id = compteur++;
 
         // Intercepter un wifi info null et retourner.  Possiblement on devrait changer le constructeur
         // Selon ce que j'ai lu, c'est wifiManager.getScanResults() qu'il faudrait utiliser.
