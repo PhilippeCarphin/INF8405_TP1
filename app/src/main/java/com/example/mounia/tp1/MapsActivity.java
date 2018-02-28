@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -23,6 +24,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private WifiManager wifiManager;
     private ArrayList<PointAcces> pointsAcces;
+    private ArrayList<PointAcces> favoris;      // Liste de points d'acces favoris
     private FragmentManager fragmentManager;
 
     // Les deux fragments dynamiques qui peuvent se remplacer
@@ -48,6 +50,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Initialiser le WifiManager
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
+
+        // Quand l'application se lance, les points d'accès à proximité sont détectés
+        this.pointsAcces = detecterPointsAcces();
     }
 
     /**
@@ -69,9 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerPoly = new MarkerOptions().position(polytechnique).title("Position").snippet("École polytechnique");
 
         mMap.addMarker(markerPoly);
-
-        // Quand l'application se lance, les points d'accès à proximité sont détectés
-        this.pointsAcces = detecterPointsAcces();
 
         // Ces points d'accès doivent être placés sur la carte.
         placerMarkersSurCarte();
@@ -137,9 +139,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // ...
     }
 
+    // Permet de chercher un point d'acces dans un array list.
+    // Pour le moment, on a juste ce besoin.
+    // Si aucun point d'acces avec idPointAcces n'est trouve dans pointsAcces
+    // alors cette fonction renvoie null
+    public static PointAcces trouverPointAcces(ArrayList<PointAcces> pointsAcces, int idPointAcces) {
+        for (PointAcces pointAcces : pointsAcces)
+            if (pointAcces.obtenirID() == idPointAcces)
+                return pointAcces;
+        return null;
+    }
+
     @Override
     public void onPointAccesSelected(int position) {
+
+        // Recuperer le point d'acces selectionne
+        PointAcces pointAcces = trouverPointAcces(pointsAcces, position);
+
+        // Test
+        Log.i("PointAcces", "position :" + position);
+        Log.i("PointAcces", "id :" + pointsAcces.get(0).obtenirID());
+
+        // Assigner le point d'acces selectionne au fragment de details
+        fragmentDetailsPointAcces.assignerPointAcces(pointAcces);
+
+        // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
         remplacerFragment(this.fragmentDetailsPointAcces, null, R.id.conteneur_fragment_dynamique);
+
+        // Mettre les vues a jour pour ce nouveau point d'acces
+        //fragmentDetailsPointAcces.mettreVuesAJour();
     }
 
     // Finalement, la fonctionnalité partager sert à envoyer l' information
@@ -149,22 +177,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void partager(int idPointAcces) {
         // TODO ...
         // Déjà réalisé par Mounia...
+
+        // Test
         Toast.makeText(this, "Partager point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void ajouterAuxFavoris(int idPointAcces) {
-        // TODO ...
-        // @Mounia
+        // Test, enlever le Toast suivant une fois que cette fonction peut etre convoquee
         Toast.makeText(this, "Ajouter point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
+
+        // TODO : Chercher dans la liste pointsAcces le point d'acces ayant l'id
+        // ...
+
+        // TODO : Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
+        // en appelant sa methode ajouterAuxFavoris
+        // ...
+
+        // TODO : Ajouter ce point d'acces dans la liste de favoris
+        // ...
+
+        // TODO : Ajouter ce point d'acces egalement dans les SharedPreferences ou une
+        // table SQLite de points d'acces favoris ou une autre methode de persistence
+        // ...
     }
 
     // Juste pour permettre d'enlever, même si ce n'est pas dans l'énoncé
     @Override
     public void enleverDesFavoris(int idPointAcces) {
-        // TODO ...
-        // @Mounia
+        // Test
         Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
+
+        // TODO : Faire les operations inverses qui se trouvent dans la fonction ajouterAuxFavoris
+        // ...
     }
 
     @Override

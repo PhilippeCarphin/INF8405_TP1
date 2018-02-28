@@ -3,14 +3,13 @@ package com.example.mounia.tp1;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Path;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,21 +21,43 @@ import android.widget.TextView;
  */
 public class FragmentDetailsPointAcces extends Fragment {
 
+    // Pour pointer vers une implementation de cette interface observatrice
     private OnDetailsInteractionListener mListener;
 
-    private Activity activity;
+    // Pour pointer vers l'activite parent qui contiendra ce fragment
+    private Activity activity = null;
+
+    // Le point d'acces pour lequel ces details  seront affiches
+    private PointAcces pointAcces = null;
+
+    // Vues pour le SSID, BSSID et RSSI
+    private TextView vueSSID  = null;
+    private TextView vueBSSID = null;
+    private TextView vueRSSI  = null;
+
+    // Vue pour afficher si c'est avec ou sans mot de passe
+    private TextView vueAcces = null;
+
+    // Les vues pour ajouter aux favoris, partager et obenir la direction
+    private Button vueAjouterAuxFavoris = null;
+    private Button vuePartager          = null;
+    private Button vueObtenirDirection  = null;
+
+    // TODO : Ajouter des vues pour le mécanisme d’authentification, de la	gestion	des	clés et	du
+    // schéma de chiffrement pris en charge	par	le point d’accès (WEP, WPA etc…).
+    // ...
 
     public FragmentDetailsPointAcces() {
         // Required empty public constructor
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
+    // Doit etre appelee par MapsActivity pour initialiser
+    // le fragment avec les bonnes infos du point d'acces detecte
+    public void assignerPointAcces(PointAcces pointAcces) {
+        this.pointAcces = pointAcces;
+    }
 
+    public PointAcces obtenirPointAcces() { return pointAcces; }
 
     @Override
     public void onAttach(Context context) {
@@ -53,35 +74,89 @@ public class FragmentDetailsPointAcces extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //TextView textView = new TextView(getActivity());
-        //textView.setText(R.string.hello_blank_fragment);
-        //return textView;
 
-        RelativeLayout relativeLayout = new RelativeLayout(getActivity());
+        // La vue a renvoyer par cette methode
+        RelativeLayout vuePrincipaleFragment = new RelativeLayout(activity);
 
-        // Ajouter la vue du ssid a la vue du fragment
-        TextView ssidTextView = new TextView(activity);
-        ssidTextView.setText("SSID : ");
-        relativeLayout.addView(ssidTextView);
+        // NB: Si le point d'acces n'a pas ete assigne avant cette methode
+        // alors il faut que ca crash
+        if (pointAcces == null)
+            throw new NullPointerException("Point d'acces n'est pas initialise");
 
-        Button boutonPartager = new Button(activity);
-        boutonPartager.setText("Partager");
-        boutonPartager.setOnClickListener(new View.OnClickListener() {
+        // Ajouter la vue du ssid
+        vueSSID = new TextView(activity);
+        vuePrincipaleFragment.addView(vueSSID);
+
+        // Ajouter la vue du bssid
+        vueBSSID = new TextView(activity);
+        vuePrincipaleFragment.addView(vueBSSID);
+
+        // Ajouter la vue du rssi
+        vueRSSI = new TextView(activity);
+        vuePrincipaleFragment.addView(vueRSSI);
+
+        // Ajouter la vue pour afficher si c'est avec ou sans mot de passe
+        vueAcces = new TextView(activity);
+        vuePrincipaleFragment.addView(vueAcces);
+
+        // Assigner les infos du point d'acces
+        mettreVuesAJour();
+
+        // Initialiser la vue pour ajouter/enlever ce point d'acces des favoris
+        vueAjouterAuxFavoris = new Button(activity);
+        vueAjouterAuxFavoris.setText("Ajouter aux favoris");
+        vueAjouterAuxFavoris.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.partager(15); // essai
+                mListener.ajouterAuxFavoris(1); // essai
             }
         });
-        relativeLayout.addView(boutonPartager);
+        vuePrincipaleFragment.addView(vueAjouterAuxFavoris);
+
+        // Initialiser la vue pour partager
+        vuePartager = new Button(activity);
+        vuePartager.setText("Partager");
+        vuePartager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.partager(1); // essai
+            }
+        });
+        vuePrincipaleFragment.addView(vuePartager);
+
+        // Initialiser la vue pour obtenir un chemin parmi ceux les plus courts
+        // entre la position actuelle et ce point d'acces
+        vueObtenirDirection = new Button(activity);
+        vueObtenirDirection.setText("Obtenir direction");
+        vueObtenirDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.obtenirDirection(1); // essai
+            }
+        });
+        vuePrincipaleFragment.addView(vueObtenirDirection);
 
         // TODO : Ajouter les autres vues
         // ...
 
-        return relativeLayout;
+        return vuePrincipaleFragment;
     }
 
-    private View detailsFragmentView;
+    // Mettre les vues a jour en fonctions des infos du point d'acces.
+    // Doit etre appele a chaque fois qu'un nouveau point d'acces est assigne.
+    public void mettreVuesAJour() {
+        vueSSID.setText("SSID : " + pointAcces.obtenirSSID());
+        vueBSSID.setText("BSSID : " + pointAcces.obtenirBSSID());
+        vueRSSI.setText("RSSI : " + pointAcces.obtenirRSSI());
+        String messageAcces = pointAcces.estProtegeParMotDePasse() ? "Protege par mot de passe" : "Sans mot de passe";
+        vueAcces.setText(messageAcces);
+    }
 
     // Called when the fragment's activity has been created and this fragment's view hierarchy
     // instantiated. It can be used to do final initialization once these pieces are in place,
@@ -89,11 +164,6 @@ public class FragmentDetailsPointAcces extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        // Recuperer la vue associee a ce fragment
-        detailsFragmentView = getView();
-
-        // TODO ...
     }
 
     @Override
