@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static java.lang.Math.abs;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
         FragmentListePointsAcces.OnPointAccesSelectedListener, FragmentDetailsPointAcces.OnDetailsInteractionListener
@@ -216,15 +215,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return mo;
     }
 
-    private PointAcces trouverPointAccesParMarqueur(List<PointAcces> l, MarkerOptions mo){
-        for(PointAcces pa : l){
-            if(mo == pa.getMarkerOptions()){
-                return pa;
-            }
-        }
-        return null;
-    }
-
     public boolean onMarkerClick(Marker marker){
         int id;
         try {
@@ -273,6 +263,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i("PointAcces", pointsAcces.get(position).toString());
         Log.i("PointAcces", "id :" + pointsAcces.get(position).obtenirID());
 
+        fragmentDetailsPointAcces = new FragmentDetailsPointAcces();
         // Assigner le point d'acces selectionne au fragment de details
         fragmentDetailsPointAcces.assignerPointAcces(pointAcces);
 
