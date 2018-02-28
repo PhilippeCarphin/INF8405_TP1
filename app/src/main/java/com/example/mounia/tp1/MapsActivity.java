@@ -80,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         wifiManager.startScan();
         // Quand l'application se lance, les points d'accès à proximité sont détectés
         this.pointsAcces = createAccessPoints();
+        // placerMarkersSurCarte();
     }
 
     /**
@@ -199,10 +200,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     static private final Random rand = new Random();
-    private MarkerOptions PointAccesToMarkerOptions(PointAcces pa){
+    private MarkerOptions pointAccesToMarkerOptions(PointAcces pa){
         MarkerOptions mo;
 
-        double distance = 0.3;
+        double distance = 25;
         double dx = distance * rand.nextDouble();
         double dy = distance * rand.nextDouble();
 
@@ -215,8 +216,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return mo;
     }
 
+    private PointAcces trouverPointAccesParMarqueur(List<PointAcces> l, MarkerOptions mo){
+        for(PointAcces pa : l){
+            if(mo == pa.getMarkerOptions()){
+                return pa;
+            }
+        }
+        return null;
+    }
+
     public boolean onMarkerClick(Marker marker){
-        int id = abs(rand.nextInt()) % pointsAcces.size();
+        int id;
+        try {
+            id = (Integer) marker.getTag();
+        } catch (NullPointerException e) {
+            Log.i("NULLPTR", "Getting integer is fucked up");
+            id = 0;
+        }
         Log.i("MAP MARKER", "MARKER CLICKED : Number " + String.valueOf(id));
         onPointAccesSelected(id);
         return false;
@@ -226,6 +242,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         // TODO : placer des markers pour les points d'accès détectés sur la carte
         // ...
+        for(PointAcces pa : pointsAcces){
+            MarkerOptions mo = pointAccesToMarkerOptions(pa);
+
+            Marker m = mMap.addMarker(mo);
+            m.setTag(Integer.valueOf(pa.obtenirID()));
+        }
 
     }
 
@@ -258,7 +280,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         remplacerFragment(this.fragmentDetailsPointAcces, null, R.id.conteneur_fragment_dynamique);
 
         // Mettre les vues a jour pour ce nouveau point d'acces
-        //fragmentDetailsPointAcces.mettreVuesAJour();
+        // fragmentDetailsPointAcces.mettreVuesAJour();
     }
 
     // Finalement, la fonctionnalité partager sert à envoyer l' information
