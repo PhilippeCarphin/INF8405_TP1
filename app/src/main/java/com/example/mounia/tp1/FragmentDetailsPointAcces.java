@@ -78,21 +78,7 @@ public class FragmentDetailsPointAcces extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        // La vue a renvoyer par cette methode
-        // RelativeLayout vuePrincipaleFragment = new RelativeLayout(activity);
-
-
-        // J'ai changé pour linearLayout juste pour voir les infos pour gosser.  Creer trois vues
-        LinearLayout vuePrincipaleFragment = new LinearLayout(activity);
-        vuePrincipaleFragment.setOrientation(LinearLayout.VERTICAL);
-        vuePrincipaleFragment.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        vuePrincipaleFragment.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT)
-        );
+    public View makeInfoView(String SSID, String BSSID, String RSSID, boolean acces){
 
         LinearLayout vueInfo = new LinearLayout(activity);
         vueInfo.setBackgroundColor(0xffaabbcc);
@@ -101,40 +87,39 @@ public class FragmentDetailsPointAcces extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
         );
-        vuePrincipaleFragment.addView(vueInfo);
-
-        LinearLayout vueBoutons = new LinearLayout(activity);
-        vueBoutons.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        vueBoutons.setOrientation(LinearLayout.VERTICAL);
-        vueInfo.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT)
-        );
-        vuePrincipaleFragment.addView(vueBoutons);
-
-        // NB: Si le point d'acces n'a pas ete assigne avant cette methode
-        // alors il faut que ca crash
-        if (pointAcces == null)
-            throw new NullPointerException("Point d'acces n'est pas initialise");
 
         // Ajouter la vue du ssid
         vueSSID = new TextView(activity);
+        vueSSID.setText("SSID : " + SSID);
         vueInfo.addView(vueSSID);
 
         // Ajouter la vue du bssid
         vueBSSID = new TextView(activity);
+        vueBSSID.setText("BSSID : " + BSSID);
         vueInfo.addView(vueBSSID);
 
         // Ajouter la vue du rssi
         vueRSSI = new TextView(activity);
+        vueRSSI.setText("RSSI : " + RSSID);
         vueInfo.addView(vueRSSI);
 
         // Ajouter la vue pour afficher si c'est avec ou sans mot de passe
         vueAcces = new TextView(activity);
+        String messageAcces = acces ? "Protege par mot de passe" : "Sans mot de passe";
+        vueAcces.setText(messageAcces);
         vueInfo.addView(vueAcces);
 
-        // Assigner les infos du point d'acces
-        mettreVuesAJour();
+        return vueInfo;
+    }
+
+    public View makeButtonView(){
+        LinearLayout vueBoutons = new LinearLayout(activity);
+        vueBoutons.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        vueBoutons.setOrientation(LinearLayout.VERTICAL);
+        vueBoutons.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+        );
 
         // Initialiser la vue pour ajouter/enlever ce point d'acces des favoris
         vueAjouterAuxFavoris = new Button(activity);
@@ -169,6 +154,34 @@ public class FragmentDetailsPointAcces extends Fragment {
             }
         });
         vueBoutons.addView(vueObtenirDirection);
+        return vueBoutons;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        // La vue a renvoyer par cette methode
+        // RelativeLayout vuePrincipaleFragment = new RelativeLayout(activity);
+
+        // J'ai changé pour linearLayout juste pour voir les infos pour gosser.  Creer trois vues
+        // On pourrait faire de ces sous-vues des composantes reutilisables
+        LinearLayout vuePrincipaleFragment = new LinearLayout(activity);
+        vuePrincipaleFragment.setOrientation(LinearLayout.VERTICAL);
+        vuePrincipaleFragment.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        vuePrincipaleFragment.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT)
+        );
+
+
+        // NB: Si le point d'acces n'a pas ete assigne avant cette methode
+        // alors il faut que ca crash
+        if (pointAcces == null)
+            throw new NullPointerException("Point d'acces n'est pas initialise");
+
+        vuePrincipaleFragment.addView(makeInfoView(pointAcces.obtenirSSID(), pointAcces.obtenirBSSID(), pointAcces.obtenirBSSID(), pointAcces.estProtegeParMotDePasse()));
+
+        vuePrincipaleFragment.addView(makeButtonView());
 
         // TODO : Ajouter les autres vues
         // ...
