@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -55,6 +56,9 @@ public class FragmentDetailsPointAcces extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    private Button boutonAjouterAuxFavoris;
+    // ajouter autres boutons
 
     /**
      * This interface must be implemented by activities that contain this

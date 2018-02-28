@@ -1,13 +1,22 @@
 package com.example.mounia.tp1;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Path;
 import android.net.wifi.WifiManager;
+import android.os.BatteryManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,6 +33,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private WifiManager wifiManager;
     private ArrayList<PointAcces> pointsAcces;
     private FragmentManager fragmentManager;
+
+    private TextView textBattery;
 
     // Les deux fragments dynamiques qui peuvent se remplacer
     private FragmentListePointsAcces fragmentListePointsAcces;
@@ -48,6 +59,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Initialiser le WifiManager
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
+
+        textBattery = (TextView) findViewById(R.id.textBattery);
+        textBattery.setText(obtenirBattery(this));
+
+
+
     }
 
     /**
@@ -153,7 +170,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void partager(int idPointAcces) {
         // TODO ...
-        // Déjà réalisé par Mounia...
+
+        Intent sharingnIntent = new Intent(Intent.ACTION_SEND);
+        sharingnIntent.setType("text/plain");
+        String shareBodyText = pointsAcces.get(idPointAcces).obtenirSSID();
+        sharingnIntent.putExtra(Intent.EXTRA_SUBJECT,"WIFI Gratuit");
+        sharingnIntent.putExtra(Intent.EXTRA_TEXT,shareBodyText);
+        startActivity(Intent.createChooser(sharingnIntent,"partager par"));
     }
 
     @Override
@@ -175,4 +198,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // @Philippe
         return null;
     }
+
+
+    static String obtenirBattery(Context context) {
+            Intent batteryIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            if(batteryIntent != null) {
+                int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+                if (level > -1 && scale > 0) {
+                    return Float.toString(((float) level / (float) scale) * 100.0f);
+                }
+            }
+
+        return null;
+    }
+
 }

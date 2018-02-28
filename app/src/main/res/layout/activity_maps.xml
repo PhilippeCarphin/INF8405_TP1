@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".MapsActivity" >
+    tools:context=".MapsActivity">
+
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0px"
-        android:layout_height="match_parent"
+        android:layout_height="490dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
         android:layout_weight="2"
         android:apiKey="@string/mapkey" />
 
-    <include layout="@layout/vue_fragment_dynamique" />
+    <include
+        layout="@layout/vue_fragment_dynamique"
+         />
 
     <!--
     <fragment
@@ -28,9 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_weight="2"/>
+        android:lt_weight="2"/>
         -->
 
 </LinearLayout>
