@@ -19,12 +19,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+import static java.lang.Math.abs;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
         FragmentListePointsAcces.OnPointAccesSelectedListener, FragmentDetailsPointAcces.OnDetailsInteractionListener
 {
     private BroadcastReceiver wifiScanReceiver;
@@ -101,6 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Ces points d'accès doivent être placés sur la carte.
         placerMarkersSurCarte();
 
+        mMap.setOnMarkerClickListener(this);
         // TODO
         // ...
     }
@@ -193,10 +198,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return pointAccesDetectes;
     }
 
+    static private final Random rand = new Random();
+    private MarkerOptions PointAccesToMarkerOptions(PointAcces pa){
+        MarkerOptions mo;
+
+        double distance = 0.3;
+        double dx = distance * rand.nextDouble();
+        double dy = distance * rand.nextDouble();
+
+        LatLng coords = new LatLng(45.5017 + dx, -73.5673 + dy);
+
+        mo = new MarkerOptions()
+                .position(coords)
+                .title("Wifi Hotspot " + pa.toString());
+
+        return mo;
+    }
+
+    public boolean onMarkerClick(Marker marker){
+        int id = abs(rand.nextInt()) % pointsAcces.size();
+        Log.i("MAP MARKER", "MARKER CLICKED : Number " + String.valueOf(id));
+        onPointAccesSelected(id);
+        return false;
+    }
+
     public void placerMarkersSurCarte()
     {
         // TODO : placer des markers pour les points d'accès détectés sur la carte
         // ...
+
     }
 
     // Permet de chercher un point d'acces dans un array list.
