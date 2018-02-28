@@ -2,7 +2,7 @@ package com.example.mounia.tp1;
 
 import android.graphics.Path;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiInfo;
+import android.content.BroadcastReceiver;
 import android.net.wifi.WifiManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,6 +11,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,6 +27,9 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         FragmentListePointsAcces.OnPointAccesSelectedListener, FragmentDetailsPointAcces.OnDetailsInteractionListener
 {
+    private BroadcastReceiver wifiScanReceiver;
+    private List<ScanResult> scanResults;
+
     private GoogleMap mMap;
     private WifiManager wifiManager;
     private ArrayList<PointAcces> pointsAcces;
@@ -52,10 +58,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fragmentManager = getSupportFragmentManager();
 
         // Initialiser le WifiManager
+        scanResults = new ArrayList<ScanResult>();
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
+        wifiScanReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context c, Intent intent) {
+                if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+                    List<ScanResult> scanResults = wifiManager.getScanResults();
+                    // add your logic here
+                }
+            }
+        };
 
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        registerReceiver(wifiScanReceiver,
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        wifiManager.startScan();
         // Quand l'application se lance, les points d'accès à proximité sont détectés
-        this.pointsAcces = createDummyAccessPoints();
+        this.pointsAcces = createAccessPoints();
     }
 
     /**
@@ -123,6 +143,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fragmentTransaction.commit();
     }
 
+    /*
+     * Les deux fonctions suivantes servent à générer des points d'accès pour différer la recherche
+     * de points d'acces et me permettre d'avoir une ArrayList<PointAcces> à utiliser.
+     *
+     * Par contre, s'il y avait des points d'accès réels, je devrais pouvoir les trouver dans la
+     * liste scanResults.  Je ne sais pas si c'est que mon émulateur ne peut pas le faire.
+     */
     public PointAcces PointAccesMaker(String SSID, String BSSID, boolean passwordProtected){
         PointAcces pa = new PointAcces(null);
         pa.assignerAcces(true);
@@ -131,8 +158,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return pa;
     }
 
-    public ArrayList<PointAcces> createDummyAccessPoints(){
-        List<ScanResult> sr = wifiManager.getScanResults();
+    public ArrayList<PointAcces> createAccessPoints(){
+        List<ScanResult> sr = scanResults;
         ArrayList<PointAcces> pointsAcces = new ArrayList<>(10);
 
         if(sr.size() == 0){
@@ -190,8 +217,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         PointAcces pointAcces = trouverPointAcces(pointsAcces, position);
 
         // Test
-        Log.i("PointAcces", "position :" + position);
-        Log.i("PointAcces", "id :" + pointsAcces.get(0).obtenirID());
+        Log.i("PointAcces", "onPointAccesSelected() position :" + position);
+        Log.i("PointAcces", pointsAcces.get(position).toString());
+        Log.i("PointAcces", "id :" + pointsAcces.get(position).obtenirID());
 
         // Assigner le point d'acces selectionne au fragment de details
         fragmentDetailsPointAcces.assignerPointAcces(pointAcces);
