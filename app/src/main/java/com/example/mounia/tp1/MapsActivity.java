@@ -200,14 +200,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Ajouter
         ArrayList<PointAcces> pointAccesDetectes = new ArrayList<>(10);
         for(ScanResult scanResult : scanResults)
-            pointAccesDetectes.add(new PointAcces(scanResult));
+            pointAccesDetectes.add(PointAcces.PointAccesFromScanResult(scanResult));
 
+        if(scanResults.size() == 0){
+            pointAccesDetectes = noScanResultsFallback();
+        }
         // Juste pour tester
         for(PointAcces pa : pointAccesDetectes) {
             Log.i("wifi", pa.toString());
         }
 
         return pointAccesDetectes;
+    }
+
+    public ArrayList<PointAcces> noScanResultsFallback(){
+        ArrayList<PointAcces> fallback = new ArrayList<>(10);
+        fallback.add(new PointAcces("It Hurts when IP", "00-14-22-01-23-45", 2));
+        fallback.add(new PointAcces("PolyFab", "00-99-22-01-23-45", 2));
+        fallback.add(new PointAcces("Sur le pont d'Avignon", "00-14-22-01-23-45", 2));
+        fallback.add(new PointAcces("I'm pretty fly for a WiFi", "00-14-22-01-23-45", 2));
+        fallback.add(new PointAcces("BELL451", "00-14-22-01-23-45", 2));
+        return fallback;
     }
 
     static private final Random rand = new Random();

@@ -1,0 +1,14 @@
+*.log
+*.aux
+main.pdf
+page_titre.pdf
+*_latexmk
+*syntex.gz
+*.toc
+*.bb.
+*.blg
+*.swp
+*.swo
+*.swm
+*.swn
+*.bbl

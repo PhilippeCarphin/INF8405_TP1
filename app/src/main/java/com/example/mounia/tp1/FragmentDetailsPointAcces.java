@@ -82,8 +82,10 @@ public class FragmentDetailsPointAcces extends Fragment {
     public View makeInfoView(String SSID, String BSSID, String RSSI, String acces){
 
         LinearLayout vueInfo = new LinearLayout(activity);
-        vueInfo.setBackgroundColor(0xffaabbcc);
+        vueInfo.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         vueInfo.setOrientation(LinearLayout.VERTICAL);
+
+
         vueInfo.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -115,7 +117,7 @@ public class FragmentDetailsPointAcces extends Fragment {
 
     public View makeButtonView(){
         LinearLayout vueBoutons = new LinearLayout(activity);
-        vueBoutons.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        vueBoutons.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         vueBoutons.setOrientation(LinearLayout.VERTICAL);
         vueBoutons.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -168,7 +170,7 @@ public class FragmentDetailsPointAcces extends Fragment {
         // On pourrait faire de ces sous-vues des composantes reutilisables
         LinearLayout vuePrincipaleFragment = new LinearLayout(activity);
         vuePrincipaleFragment.setOrientation(LinearLayout.VERTICAL);
-        vuePrincipaleFragment.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        vuePrincipaleFragment.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         vuePrincipaleFragment.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT)
