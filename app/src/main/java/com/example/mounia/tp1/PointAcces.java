@@ -4,6 +4,7 @@ import android.graphics.Path;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 
+
 /**
  * Created by passenger on 2/15/2018.
  */
@@ -39,33 +40,48 @@ public class PointAcces
 
     // Constructeur qui prend un ScanResult
     // ref : https://developer.android.com/reference/android/net/wifi/WifiManager.html#getScanResults()
-    public PointAcces(ScanResult scanResult)
+
+    /**
+     * Constructeur de base pour créer un PointAcces avec SSID, BSSID et RSSID et valeurs par défaut
+     * pour les autres attributs
+     * @param SSID
+     * @param BSSID
+     * @param RSSI
+     */
+    public PointAcces(String SSID, String BSSID, int RSSI)
     {
         // TODO : Inititialiser le id avec un outil tel que UUID...
         this.id = compteur;
         compteur++;
 
+        this.ssid = SSID;
+        this.bssid = BSSID;
+        this.rssi = -1;
+        this.estFavori = false;
+        this.capabilities = "";
+        this.avecMotDePasse = false;
+    }
+
+    /**
+     * Factory de PointAcces pour créer un PointAcces à partir d'un ScanResult
+     * @param sr
+     * @return
+     */
+    static public PointAcces PointAccesFromScanResult(ScanResult sr){
         // Philippe : Intercepter un ScanResult null et retourner.
         // Reph : C'est possible d'intercepter en effet. Toutefois, ici, il semble qu'il nous
         // faut les infos et donc scanResult ne doit pas etre null. Donc, ca devrait crash
         // pour qu'on decouvre ce bug avant la sortie du programme en production.
         // => Utilisation d'un assert serait bien.
-        if (scanResult == null)
+        if (sr == null)
             throw new NullPointerException("ScanResult is null");
 
-        // Initialiser le nom du reseau, l'adresse MAC et l'intensite du signal recu
-        this.ssid  = scanResult.SSID;
-        this.bssid = scanResult.BSSID;
-        this.rssi  = scanResult.level;
+        PointAcces pa = new PointAcces(sr.SSID, sr.BSSID, sr.level);
 
-        // Initialement, ce n'est pas un favori
-        estFavori = false;
+        pa.estFavori = false;
+        pa.capabilities = sr.capabilities;
 
-        // Est protege par mot de passe ou non?
-       // this.avecMotDePasse = AccessPointState.getScanResultSecurity(scanResult) != AccessPointState.OPEN; // TODO : recuperer la bonne info
-
-        // Describes the authentication, key management, and encryption schemes supported by the access point.
-        this.capabilities = scanResult.capabilities;
+        return pa;
     }
 
     public int obtenirID() { return this.id; }
