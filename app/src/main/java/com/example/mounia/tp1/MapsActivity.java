@@ -37,7 +37,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
+/**
+ * Cette classe est l'activité principale pour le projet.
+ *
+ * @author Reph Dauphin Mombrun, Mounia Nordine, Philippe Carphin
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
         FragmentListePointsAcces.OnPointAccesSelectedListener, FragmentDetailsPointAcces.OnDetailsInteractionListener
 {
@@ -61,6 +65,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Gson gson;
 
 
+    /**
+     * Cette méthode est appelée lors de la création de l'activité
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -110,13 +118,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * Manipule la map lorsque celle-ci devient disponible.
+     * Ce callback est appelé lorsque la map est prête à être utilisée.
+     * C'est ici que les marqueurs sont ajoutés.
      */
     @Override
     public void onMapReady(GoogleMap googleMap)
@@ -153,6 +157,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             fragmentManager.beginTransaction().add(R.id.conteneur_fragment_dynamique, fragmentListePointsAcces).commit();
     }
 
+    /**
+     * Cette fonction encapsule la transaction de remplacement du fragment qui se trouve du côté
+     * droit de l'activité.
+     * @param remplacant
+     * @param donneesATransmettre
+     * @param idConteneurFragment
+     */
     public void remplacerFragment(Fragment remplacant, Bundle donneesATransmettre, int idConteneurFragment)
     {
         // Passer les arguments au nouveau fragment (remplacant)
@@ -175,12 +186,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fragmentTransaction.commit();
     }
 
-    /*
+    /**
      * Les deux fonctions suivantes servent à générer des points d'accès pour différer la recherche
      * de points d'acces et me permettre d'avoir une ArrayList<PointAcces> à utiliser.
      *
      * Par contre, s'il y avait des points d'accès réels, je devrais pouvoir les trouver dans la
      * liste scanResults.  Je ne sais pas si c'est que mon émulateur ne peut pas le faire.
+     */
+
+    /**
+     * Cette fonction sert à créer une instance de PointAccès.
+     * @deprecated On devrait utiliser le constructeur.
+     * @param SSID
+     * @param BSSID
+     * @param passwordProtected
+     * @return instance de PointAcces
      */
     public PointAcces PointAccesMaker(String SSID, String BSSID, boolean passwordProtected){
         PointAcces pa = new PointAcces(null);
@@ -190,6 +210,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return pa;
     }
 
+    /**
+     * Crée les PointsAcces à partir des réseaux trouvés et optionnellement crée des points d'accès
+     * bidons si aucun point d'accès n'est trouvé.  Ceci est pour des fins de tests sur un simulateur
+     * car sur un simulateur, la procédure pour trouver des points d'accès ne fonctionne pas.
+     * @return
+     */
     public ArrayList<PointAcces> createAccessPoints(){
         List<ScanResult> sr = scanResults;
         ArrayList<PointAcces> pointsAcces = new ArrayList<>(10);
@@ -212,6 +238,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return pointsAcces;
     }
 
+    /**
+     * Fonction originale pour la détection de points d'accès.  On devrait utiliser la fonction
+     * createAccessPoints() pour pouvoir tester sur un simulateur.
+     * @deprecated utiliser createAccessPoints()
+     * @return
+     */
     public ArrayList<PointAcces> detecterPointsAcces()
     {
         // TODO : détecter les points d'accès à proximité et les renvoyer
@@ -226,6 +258,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     static private final Random rand = new Random();
+
+    /**
+     * Crée une instance de MarkerOptions à partir d'un PointAcces en vue de le mettre sur la map.
+     * La fonction lui donne des coordonnées distribuées aléatoirement autour de Poly
+     * @param pa Le point d'accès d'entrée
+     * @return un MarkerOptions avec des coordonnées pas trop loin de Poly
+     */
     private MarkerOptions pointAccesToMarkerOptions(PointAcces pa){
         MarkerOptions mo;
 
@@ -242,6 +281,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return mo;
     }
 
+    /**
+     * Fonction de rappel pour le click d'un marqueur.  On extrait le ID du point d'accès et on
+     * signale la sélection du point d'accès en passant le ID à onPointAccesSelected().
+     * @param marker le marqueur cliqué
+     * @return booléen spécifiant si oui ou non on veut bloquer le comportement par défaut.
+     * Ce comportement n'est pas bloqué.
+     */
     public boolean onMarkerClick(Marker marker){
         int id;
         try {
@@ -268,10 +314,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    // Permet de chercher un point d'acces dans un array list.
-    // Pour le moment, on a juste ce besoin.
-    // Si aucun point d'acces avec idPointAcces n'est trouve dans pointsAcces
-    // alors cette fonction renvoie null
+    /**
+     * Permet de chercher un point d'acces dans un array list.
+     * @param pointsAcces la liste dans laquelle chercher
+     * @param idPointAcces le id à rechercher.
+     * @return Le PointAcces ou null si pas trouvé
+     */
     public static PointAcces trouverPointAcces(ArrayList<PointAcces> pointsAcces, int idPointAcces) {
         for (PointAcces pointAcces : pointsAcces)
             if (pointAcces.obtenirID() == idPointAcces)
