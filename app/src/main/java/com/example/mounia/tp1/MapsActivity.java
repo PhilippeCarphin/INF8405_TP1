@@ -328,15 +328,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onPointAccesSelected(int position) {
+    public void onPointAccesSelected(int idPointAcces) {
 
         // Recuperer le point d'acces selectionne
-        PointAcces pointAcces = trouverPointAcces(pointsAcces, position);
+        PointAcces pointAcces = trouverPointAcces(pointsAcces, idPointAcces);
 
         // Test
-        Log.i("PointAcces", "onPointAccesSelected() position :" + position);
-        Log.i("PointAcces", pointsAcces.get(position).toString());
-        Log.i("PointAcces", "id :" + pointsAcces.get(position).obtenirID());
+        Log.i("PointAcces", "onPointAccesSelected() position :" + idPointAcces);
+        Log.i("PointAcces", pointAcces.toString());
+        Log.i("PointAcces", "id :" + pointAcces.obtenirID());
 
         fragmentDetailsPointAcces = new FragmentDetailsPointAcces();
         // Assigner le point d'acces selectionne au fragment de details
