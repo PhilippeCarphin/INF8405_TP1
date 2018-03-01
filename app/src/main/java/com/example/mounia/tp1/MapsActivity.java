@@ -255,15 +255,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Ce comportement n'est pas bloqué.
      */
     public boolean onMarkerClick(Marker marker){
-        int id;
+        int id = 0;
         try {
             id = (Integer) marker.getTag();
+            onPointAccesSelected(id);
         } catch (NullPointerException e) {
-            Log.i("NULLPTR", "Getting integer is fucked up");
-            id = 0;
+            // Si le marqueur n'a pas d'ID, c'est que c'est le marqueur de l'emplacement de POLY
+            // On ne fait pas d'onPointAccesSelected.
         }
-        Log.i("MAP MARKER", "MARKER CLICKED : Number " + String.valueOf(id));
-        onPointAccesSelected(id);
         return false;
     }
 
