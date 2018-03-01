@@ -3,6 +3,7 @@ package com.example.mounia.tp1;
 import android.graphics.Path;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
+//import  com.android.settings.wifi.AccessPointState;
 
 /**
  * Created by passenger on 2/15/2018.
@@ -62,7 +63,7 @@ public class PointAcces
         estFavori = false;
 
         // Est protege par mot de passe ou non?
-        this.avecMotDePasse = true; // TODO : recuperer la bonne info
+       // this.avecMotDePasse = AccessPointState.getScanResultSecurity(scanResult) != AccessPointState.OPEN; // TODO : recuperer la bonne info
 
         // Describes the authentication, key management, and encryption schemes supported by the access point.
         this.capabilities = scanResult.capabilities;

@@ -25,6 +25,7 @@ public class SharedPreference {
     private static final String PREF_NAME = "pref";
     private static final String POINTACCES = "pointAcces";
 
+
     public SharedPreference(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
@@ -32,6 +33,8 @@ public class SharedPreference {
     }
 
     public void saveList(String pointAccesString) {
+        //Gson gson = new Gson();
+       // String json = gson.toJson(PointAcces);
         editor.putString(POINTACCES, pointAccesString);
         editor.commit();
     }

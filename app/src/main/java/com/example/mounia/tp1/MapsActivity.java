@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Les deux fragments dynamiques qui peuvent se remplacer
     private FragmentListePointsAcces fragmentListePointsAcces;
     private FragmentDetailsPointAcces fragmentDetailsPointAcces;
+    private FragmentFavoris fragmentFavoris;
 
     // sharedPreference
     private SharedPreference sharedPreference;
@@ -76,6 +78,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Initialiser les fragments dynamiques
         fragmentListePointsAcces  = new FragmentListePointsAcces();
         fragmentDetailsPointAcces = new FragmentDetailsPointAcces();
+        fragmentFavoris = new FragmentFavoris();
+
 
         // Initialiser le fragment manager
         fragmentManager = getSupportFragmentManager();
@@ -332,7 +336,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 favoris.add(pointsAcces.get(i));
 
                 // TODO : Ajouter ce point d'acces egalement dans les SharedPreferences
-                String jsonScore = gson.toJson(pointsAcces);
+                String jsonScore = gson.toJson(favoris);
                 sharedPreference.saveList(jsonScore);
 
             }
@@ -343,15 +347,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Obtient un fragment FragmentListPointsAcces à partir des shared preferences
      */
-    private void obtenirListFromSharedPreference() {
+    public ArrayList<PointAcces> obtenirListFromSharedPreference() {
         //retrieve data from shared preference
         String jsonScore = sharedPreference.getList();
         Type type = new TypeToken<List<PointAcces>>(){}.getType();
-        pointsAcces = gson.fromJson(jsonScore, type);
+        return gson.fromJson(jsonScore, type);
 
-        if (pointsAcces == null) {
-            pointsAcces = new ArrayList<>();
-        }
     }
 
     /**
@@ -410,6 +411,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         return null;
+    }
+
+    public void onFavorisClick(View view)
+    {
+        fragmentFavoris = new FragmentFavoris();
+
+        // Assigner le point d'acces selectionne au fragment de details
+        fragmentFavoris.assignerPointsAccesFavoris(obtenirListFromSharedPreference());
+
+        // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
+        remplacerFragment(this.fragmentFavoris, null, R.id.conteneur_fragment_dynamique);
+
     }
 
 }
