@@ -13,24 +13,30 @@ import android.widget.SimpleAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FragmentListePointsAcces extends ListFragment
 {
-    private int[] image = new int[] {
-            R.mipmap.coffe_symbol,
-            R.mipmap.hotel_symbol,
-            R.mipmap.wifi_symbol
-    };
+    // Toujours utiliser la meme image, vue qu'il n'y a plus les 7 types d'emplacement
+    private int[] image = new int[] { R.mipmap.wifi_symbol };
 
-    private String[] text = new String[] {
-            "Café",
-            "Hotel",
-            "Poly",
-    };
+    // Pour contenir les SSID
+    private String[] text = null;
 
-    private Activity activity;
-    private ListView listFragmentListView;
-    private OnPointAccesSelectedListener mCallback;
+    // Pour contenir les points d'acces detectes au dernier scan
+    private List<PointAcces> pointsAccesDetectes = null;
+
+    // Permet de correspondre les indices de la liste vue aux ids des points d'acces
+    private Map<Integer, Integer> indicesEtIdPointsAcces = null;
+
+    // Pour pointer vers l'activite parent de ce fragment
+    private Activity activity = null;
+
+    // La vue principale de ce fragment
+    private ListView listFragmentListView = null;
+
+    // Permet de passer des messages à l'activité parent de ce fragment
+    private OnPointAccesSelectedListener mCallback = null;
 
     public FragmentListePointsAcces() {
         // Required empty public constructor
@@ -45,7 +51,7 @@ public class FragmentListePointsAcces extends ListFragment
 
     // Container Activity must implement this interface
     public interface OnPointAccesSelectedListener {
-        void onPointAccesSelected(int position);
+        void onPointAccesSelected(int idPointAcces);
     }
 
     @Override
@@ -73,17 +79,15 @@ public class FragmentListePointsAcces extends ListFragment
         // Note: If your fragment is a subclass of ListFragment, the default
         // implementation returns a ListView from onCreateView()
 
-
-        // TODO : Recuperer une liste de SSID qui se trouve dans le rayon de proximite
-        // au lieu de cette liste codee a la main. Une methode statique de l'activite
-        // qui renvoie la liste des points d'acces a proximite ou detectes peut peut-etre
-        // faire l'affaire
-        // ...
+        // Arrivé ici, la méthode assignerPointsAcces de ce fragment devrait déjà être
+        // appelée. Si elle est null, on devrait découvrir le bug.
+        if (this.pointsAccesDetectes == null)
+            throw new NullPointerException("pointsAccesDetectes is null");
 
         List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < this.pointsAccesDetectes.size(); i++) {
             HashMap<String, String> hm = new HashMap<String, String>();
-            hm.put("image", Integer.toString(image[i]));
+            hm.put("image", Integer.toString(image[0]));
             hm.put("text", text[i]);
             aList.add(hm);
         }
@@ -98,6 +102,26 @@ public class FragmentListePointsAcces extends ListFragment
         setListAdapter(adapter);
 
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    public void assignerPointsAccesDetectes(List<PointAcces> pointsAcces) {
+        if (pointsAcces != null) {
+            // Se rappeler des derniers points d'acces detectes
+            this.pointsAccesDetectes = pointsAcces;
+
+            // Initialiser text et la table de correspondance d'indices de la liste et des ids de points d'acces
+            text = new String[pointsAcces.size()];
+            indicesEtIdPointsAcces = new HashMap<>();
+
+            // Remplir le tableau text
+            for (int i = 0; i < pointsAcces.size(); i++) {
+                text[i] = pointsAcces.get(i).obtenirSSID();
+
+                // et profiter de ce parcours de boucle pour matcher les indices
+                // avec les ids des points d'acces
+                indicesEtIdPointsAcces.put(i, pointsAcces.get(i).obtenirID());
+            }
+        }
     }
 
     // Called when the fragment's activity has been created and this fragment's view hierarchy
@@ -115,7 +139,7 @@ public class FragmentListePointsAcces extends ListFragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Passer le message a l'activite parent
-                mCallback.onPointAccesSelected(position);
+                mCallback.onPointAccesSelected(indicesEtIdPointsAcces.get(position));
             }
         });
     }

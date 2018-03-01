@@ -54,32 +54,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         // Initialiser les fragments dynamiques
-        fragmentListePointsAcces = new FragmentListePointsAcces();
+        fragmentListePointsAcces  = new FragmentListePointsAcces();
         fragmentDetailsPointAcces = new FragmentDetailsPointAcces();
 
         // Initialiser le fragment manager
         fragmentManager = getSupportFragmentManager();
 
         // Initialiser le WifiManager
-        scanResults = new ArrayList<ScanResult>();
+        //scanResults = new ArrayList<ScanResult>();
+        scanResults = null; // juste pour voir
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
         wifiScanReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
                 if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                    List<ScanResult> scanResults = wifiManager.getScanResults();
-                    // add your logic here
+                    scanResults = wifiManager.getScanResults();
                 }
             }
         };
 
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        registerReceiver(wifiScanReceiver,
-                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifiManager.startScan();
+        registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        //wifiManager.startScan();
+
         // Quand l'application se lance, les points d'accès à proximité sont détectés
-        this.pointsAcces = createAccessPoints();
-        // placerMarkersSurCarte();
+        this.pointsAcces = detecterPointsAcces();
+
+        // Après avoir scanné, passer la liste de points d'accès proches détectés
+        // au fragment liste de points accès.
+        fragmentListePointsAcces.assignerPointsAccesDetectes(pointsAcces);
     }
 
     /**
@@ -106,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placerMarkersSurCarte();
 
         mMap.setOnMarkerClickListener(this);
+
         // TODO
         // ...
     }
@@ -137,7 +140,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Ajouter la transaction sur la pile de retour pour permettre
         // a l'usager de retourner a l'etat d'avant la transaction.
-        // Note : aucun argument n'est a passer ici.
+        // Prochain push j'essaie de tenir compte de ta remarque @Philippe
         fragmentTransaction.addToBackStack(null);
 
         // Tip: For each fragment transaction, you can apply a transition animation,
@@ -148,52 +151,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fragmentTransaction.commit();
     }
 
-    /*
-     * Les deux fonctions suivantes servent à générer des points d'accès pour différer la recherche
-     * de points d'acces et me permettre d'avoir une ArrayList<PointAcces> à utiliser.
-     *
-     * Par contre, s'il y avait des points d'accès réels, je devrais pouvoir les trouver dans la
-     * liste scanResults.  Je ne sais pas si c'est que mon émulateur ne peut pas le faire.
-     */
-    public PointAcces PointAccesMaker(String SSID, String BSSID, boolean passwordProtected){
-        PointAcces pa = new PointAcces(null);
-        pa.assignerAcces(true);
-        pa.assignerBSSID(BSSID);
-        pa.assignerSSID(SSID);
-        return pa;
-    }
-
-    public ArrayList<PointAcces> createAccessPoints(){
-        List<ScanResult> sr = scanResults;
-        ArrayList<PointAcces> pointsAcces = new ArrayList<>(10);
-
-        if(sr.size() == 0){
-            pointsAcces.add(PointAccesMaker("It hurts when IP", "ab:12:cd:34:56:78", true));
-            pointsAcces.add(PointAccesMaker("Patate Poil", "ab:12:12:34:56:78", true));
-            pointsAcces.add(PointAccesMaker("Un four sur le toit", "12:12:cd:34:56:78", true));
-            pointsAcces.add(PointAccesMaker("Aye caramba!", "ab:12:cd:34:99:99", true));
-            pointsAcces.add(PointAccesMaker("I am the danger", "de:ad:be:ef:56:78", true));
-        } else {
-            for(ScanResult r : sr){
-                pointsAcces.add(PointAccesMaker(r.SSID, r.BSSID, true));
-            }
-        }
-
-        for( PointAcces pa : pointsAcces){
-            Log.i("wifi", pa.toString());
-        }
-        return pointsAcces;
-    }
-
     public ArrayList<PointAcces> detecterPointsAcces()
     {
-        // TODO : détecter les points d'accès à proximité et les renvoyer
-        // ...
+        // Détecter les points d'accès à proximité
+        wifiManager.startScan();
 
-        // Pour commencer, faire le test pour une seule détection
-        ArrayList<PointAcces> pointAccesDetectes = new ArrayList<>();
-        PointAcces pointAcces = new PointAcces(wifiManager.getConnectionInfo());
-        pointAccesDetectes.add(pointAcces);
+        // Recuperer la liste de points d'acces identifies
+        scanResults = wifiManager.getScanResults();
+
+        // Ajouter
+        ArrayList<PointAcces> pointAccesDetectes = new ArrayList<>(10);
+        for(ScanResult scanResult : scanResults)
+            pointAccesDetectes.add(new PointAcces(scanResult));
+
+        // Juste pour tester
+        for(PointAcces pa : pointAccesDetectes) {
+            Log.i("wifi", pa.toString());
+        }
 
         return pointAccesDetectes;
     }
@@ -238,7 +212,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Marker m = mMap.addMarker(mo);
             m.setTag(Integer.valueOf(pa.obtenirID()));
         }
-
     }
 
     // Permet de chercher un point d'acces dans un array list.
@@ -253,17 +226,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onPointAccesSelected(int position) {
+    public void onPointAccesSelected(int idPointAcces) {
 
         // Recuperer le point d'acces selectionne
-        PointAcces pointAcces = trouverPointAcces(pointsAcces, position);
+        PointAcces pointAcces = trouverPointAcces(pointsAcces, idPointAcces);
 
         // Test
-        Log.i("PointAcces", "onPointAccesSelected() position :" + position);
-        Log.i("PointAcces", pointsAcces.get(position).toString());
-        Log.i("PointAcces", "id :" + pointsAcces.get(position).obtenirID());
+//        Log.i("PointAcces", "onPointAccesSelected() position :" + idPointAcces);
+//        Log.i("PointAcces", pointsAcces.get(idPointAcces).toString());
+//        Log.i("PointAcces", "id :" + pointsAcces.get(idPointAcces).obtenirID());
 
         fragmentDetailsPointAcces = new FragmentDetailsPointAcces();
+
         // Assigner le point d'acces selectionne au fragment de details
         fragmentDetailsPointAcces.assignerPointAcces(pointAcces);
 
