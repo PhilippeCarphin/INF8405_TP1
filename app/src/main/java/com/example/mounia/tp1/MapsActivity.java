@@ -307,7 +307,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
         remplacerFragment(this.fragmentDetailsPointAcces, null,
-                R.id.conteneur_fragment_dynamique, addToBackStack);
+                R.id.conteneur_fragment_dynamique, true);
     }
 
     /**
@@ -318,13 +318,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void partager(int idPointAcces) {
+        // FIXME : partager aussi le BSSID et autres infos pertinentes...
         Intent sharingnIntent = new Intent(Intent.ACTION_SEND);
         sharingnIntent.setType("text/plain");
         String shareBodyText = pointsAcces.get(idPointAcces).obtenirSSID();
         sharingnIntent.putExtra(Intent.EXTRA_SUBJECT,"WIFI Gratuit");
         sharingnIntent.putExtra(Intent.EXTRA_TEXT,shareBodyText);
         startActivity(Intent.createChooser(sharingnIntent,"partager par"));
-
     }
 
     /**
@@ -333,21 +333,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void ajouterAuxFavoris(int idPointAcces) {
-        // Test, enlever le Toast suivant une fois que cette fonction peut etre convoquee
-       // Toast.makeText(this, "Ajouter point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
 
-        // TODO : Chercher dans la liste pointsAcces le point d'acces ayant l'id
+        // Chercher dans la liste pointsAcces le point d'acces ayant l'id
         for(int i = 0; i< pointsAcces.size(); i++) {
             if (pointsAcces.get(i).obtenirID() == idPointAcces) {
-                // TODO : Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
+
+                // Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
                 pointsAcces.get(i).ajouterAuxFavoris();
-                // TODO : Ajouter ce point d'acces dans la liste de favoris
+
+                // Ajouter ce point d'acces dans la liste de favoris
                 favoris.add(pointsAcces.get(i));
 
-                // TODO : Ajouter ce point d'acces egalement dans les SharedPreferences
+                // Ajouter ce point d'acces egalement dans les SharedPreferences
                 String jsonScore = gson.toJson(favoris);
                 sharedPreference.saveList(jsonScore);
-
             }
         }
     }
@@ -357,38 +356,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Obtient un fragment FragmentListPointsAcces à partir des shared preferences
      */
     public ArrayList<PointAcces> obtenirListFromSharedPreference() {
-        //retrieve data from shared preference
         String jsonScore = sharedPreference.getList();
         Type type = new TypeToken<List<PointAcces>>(){}.getType();
         return gson.fromJson(jsonScore, type);
-
     }
 
     /**
      * Juste pour permettre d'enlever, même si ce n'est pas dans l'énoncé
      * @param idPointAcces
      */
-    @Override
-    public void enleverDesFavoris(int idPointAcces) {
-        // Test
-        Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
-
-        // TODO : Faire les operations inverses qui se trouvent dans la fonction ajouterAuxFavoris
-        for(int i = 0; i< pointsAcces.size(); i++) {
-            if (pointsAcces.get(i).obtenirID() == idPointAcces) {
-
-                pointsAcces.get(i).enleverDesFavoris();
-
-                favoris.remove(pointsAcces.get(i));
-
-                // TODO : mettre à jour la liste dans les SharedPreferences
-                String jsonScore = gson.toJson(pointsAcces);
-                sharedPreference.saveList(jsonScore);
-
-            }
-        }
-
-    }
+//    @Override
+//    public void enleverDesFavoris(int idPointAcces) {
+//        // Test
+//        Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
+//
+//        // TODO : Faire les operations inverses qui se trouvent dans la fonction ajouterAuxFavoris
+//        for(int i = 0; i< pointsAcces.size(); i++) {
+//            if (pointsAcces.get(i).obtenirID() == idPointAcces) {
+//
+//                pointsAcces.get(i).enleverDesFavoris();
+//
+//                favoris.remove(pointsAcces.get(i));
+//
+//                // TODO : mettre à jour la liste dans les SharedPreferences
+//                String jsonScore = gson.toJson(pointsAcces);
+//                sharedPreference.saveList(jsonScore);
+//
+//            }
+//        }
+//    }
 
     /**
      * TODO Doit trouver le chemin entre notre emplacement et l'emplacement du marqueur cliqué ou
@@ -427,6 +423,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onFavorisClick(View view)
     {
+        if (favoris == null)
+            throw new NullPointerException("favoris is null");
+
+        if (obtenirListFromSharedPreference() == null)
+            throw new NullPointerException("obtenirListFromSharedPreference returns null");
+
         fragmentFavoris = new FragmentFavoris();
 
         // Assigner le point d'acces selectionne au fragment de details
@@ -444,7 +446,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
         remplacerFragment(this.fragmentFavoris, null,
-                R.id.conteneur_fragment_dynamique, addToBackStack);
+                R.id.conteneur_fragment_dynamique, true);
     }
 
 }
