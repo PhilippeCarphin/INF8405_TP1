@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -41,6 +42,7 @@ public class FragmentDetailsPointAcces extends Fragment {
     private Button vueAjouterAuxFavoris = null;
     private Button vuePartager          = null;
     private Button vueObtenirDirection  = null;
+
 
     // TODO : Ajouter des vues pour le mécanisme d’authentification, de la	gestion	des	clés et	du
     // schéma de chiffrement pris en charge	par	le point d’accès (WEP, WPA etc…).
@@ -214,6 +216,9 @@ public class FragmentDetailsPointAcces extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    private Button boutonAjouterAuxFavoris;
+    // ajouter autres boutons
 
     /**
      * This interface must be implemented by activities that contain this
