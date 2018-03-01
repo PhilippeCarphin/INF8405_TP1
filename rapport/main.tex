@@ -30,14 +30,14 @@
 	librairies importantes utilisées par l'application.  Ensuite, nous
 	présentons les classes que nous avons écrites pour l'application elle même.
 
-	\subsection{Classes de librairie}
+\subsection{Classes de librairie}
 
 	Les classes importantes utilisées sont la classe wifiManager et ScanResult
 	pour la recherche des points d'acces WiFi à proximité.  Pour la carte et
 	l'API Google Maps, nous utilisons la classe GoogleMap et les classes
 	GoogleMap.Marker et GoogleMap.MarkerOptions.
 
-	\subsubsection{Classes utilisées pour le Wifi}
+\subsubsection{Classes utilisées pour le Wifi}
 
 	La recherche de points d'accès est faite à l'aide de la classe
 	\code{WifiManager}.  Celle-ci demande les points d'accès disponible au
@@ -48,7 +48,7 @@
 	\code{WifiScanReceiver} et l'enregistrement de celui-ci avec la fonction
 	\code{registerReceiver()} de la classe \code{Activity}.
 
-	\subsubsection{Classes utilisées pour les Maps}
+\subsubsection{Classes utilisées pour les Maps}
 
 	La classe \code{GoogleMap} est notre point d'accès aux APIs de carte
 	géographique de Google.  On pose un fragment dans le \code{layout} de notre
@@ -57,7 +57,7 @@
 	\code{onMapReady()}.
 
 
-	\subsection{Classes propres à l'application}
+\subsection{Classes propres à l'application}
 
 	Dans cette section nous présentons les classes créées pour notre application
 	ainsi que leurs méthodes.  Nous expliquerons aussi les choix de conception
@@ -106,9 +106,10 @@
 	actons.
 
 	\begin{figure}[h]
-		\label{fig_interaction}
 		\centering
 		\includegraphics[height=2.5in]{communication_diag.pdf}
+		\caption{Diagramme des interactions de sélection de point d'accès}
+		\label{fig_interaction}
 	\end{figure}
 
 	% Lorsqu'un marqueur est cliqué, la fonction de rappel \code{onMarkerClick()}
@@ -116,13 +117,42 @@
 	% liste, elle appelle directement l
 
 
-
-
 \section{Difficultés rencontrées}
 
 	Les trois auteurs n'avaient pas d'expérience préalable avec le dévelopement
 	Android.  Nous avons donc eu une bonne mesure de difficultés.  Cette section
 	les énumère en détail.
+
+\subsection{Conflits de versions}
+
+	{\center \og There's more than one way to skin a cat.\fg \\}
+		\begin{flushright}
+			{\flushright Mark Twain (Connecticut Yankee in King Arthur’s Court)
+			1889}
+		\end{flushright}
+
+	L'écosystème Android est en constante évolution et la compatibilité vers
+	l'arrière n'est pas toujours maintenue.  Certaines classes de support nous
+	permettent d'utiliser d'anciennes classes lorsqu'on en a besoin.
+
+	Par contre, étant donné notre inexpérience avec Android, nous avons du
+	recourir à des tutoriels en-ligne.  La solution donnée par un tutoriel ne
+	fonctionne qu'avec les fragments de type  \code{android.app.Fragment} alors
+	tout va on change le \code{import} au début du fichier.
+
+	Mais hélas, ceci cause des erreurs dans des bouts de code déjà écrits qui,
+	sans qu'on le sache, utilisent des fragments de
+	\code{android.support.v4.app.Fragment}.
+
+	Heureusement, l'IDE Android Studio est très bon pour nous montrer ces
+	erreurs et même souvent, il peut nous a proposé des solutions.
+
+\subsection{Accès à la BD de Google}
+
+	Puisque nous n'avons pas accès à la base de donnée de Google qui fait
+	correspondre des adresses MAC à des coordonné géographiques, nous avons du
+	distribuer les marqueurs aléatoirement autour de l'emplacement de
+	l'usager.
 
 
 
