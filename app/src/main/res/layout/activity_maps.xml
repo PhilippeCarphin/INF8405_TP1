@@ -8,34 +8,63 @@
     android:orientation="vertical"
     tools:context=".MapsActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:text="Battery "
-        android:textSize="16dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textBattery"/>
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/favoris"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="FAVORIS" />
+        <TableRow
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent">
 
-    <TextView
-        android:layout_width="10dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/textFavoris"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_weight="0.1"
+                android:padding="5dp"
+                android:text="Niveau de battery "
+                android:textColor="@color/colorPrimary"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_weight="2"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/favoris"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:text="FAVORIS" />
+
+            <Button
+                android:id="@+id/scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="3"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="SCAN" />
+        </TableRow>
+    </TableLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:layout_marginTop="40dp">
+        android:layout_weight="2">
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
