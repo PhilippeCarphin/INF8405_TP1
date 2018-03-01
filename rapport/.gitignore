@@ -1,6 +1,7 @@
 *.log
 *.aux
-*.pdf
+main.pdf
+page_titre.pdf
 *_latexmk
 *syntex.gz
 *.toc
