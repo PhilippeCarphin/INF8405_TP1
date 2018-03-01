@@ -349,9 +349,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // fragmentDetailsPointAcces.mettreVuesAJour();
     }
 
-    // Finalement, la fonctionnalité partager sert à envoyer l' information
-    // d'un hotspot (SSID,BSSID,etc...) à un de nos contacts téléphoniques ou
-    // à un contact d'une autre app ( facebook, whatsapp, etc...).
+    /**
+     * Finalement, la fonctionnalité partager sert à envoyer l' information
+     * d'un hotspot (SSID,BSSID,etc...) à un de nos contacts téléphoniques ou
+     * à un contact d'une autre app ( facebook, whatsapp, etc...).
+     * @param idPointAcces
+     */
     @Override
     public void partager(int idPointAcces) {
         Intent sharingnIntent = new Intent(Intent.ACTION_SEND);
@@ -363,6 +366,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * Ajoute le point d'accès aux favoris
+     * @param idPointAcces
+     */
     @Override
     public void ajouterAuxFavoris(int idPointAcces) {
         // Test, enlever le Toast suivant une fois que cette fonction peut etre convoquee
@@ -385,6 +392,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    /**
+     * Obtient un fragment FragmentListPointsAcces à partir des shared preferences
+     */
     private void obtenirListFromSharedPreference() {
         //retrieve data from shared preference
         String jsonScore = sharedPreference.getList();
@@ -396,7 +406,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    // Juste pour permettre d'enlever, même si ce n'est pas dans l'énoncé
+    /**
+     * Juste pour permettre d'enlever, même si ce n'est pas dans l'énoncé
+     * @param idPointAcces
+     */
     @Override
     public void enleverDesFavoris(int idPointAcces) {
         // Test
@@ -419,6 +432,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * TODO Doit trouver le chemin entre notre emplacement et l'emplacement du marqueur cliqué ou
+     * le marqueur dont on a demandé les directions avec le bouton get-directions.
+     * @param idPointAcces
+     * @return
+     */
     @Override
     public Path.Direction obtenirDirection(int idPointAcces) {
         // TODO ...
@@ -426,6 +445,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return null;
     }
 
+    /**
+     * Retourne le niveau de la batterie en chaine de caractère.
+     * @param context
+     * @return
+     */
     static String obtenirBattery(Context context) {
             Intent batteryIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             if(batteryIntent != null) {
