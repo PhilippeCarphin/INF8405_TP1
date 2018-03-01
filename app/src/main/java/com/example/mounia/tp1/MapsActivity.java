@@ -60,6 +60,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SharedPreference sharedPreference;
     private Gson gson;
 
+    // Permet de savoir si
+    private boolean fragmentDetailsDejaEmpile = false;
+
 
     /**
      * Cette méthode est appelée lors de la création de l'activité
@@ -85,24 +88,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fragmentManager = getSupportFragmentManager();
 
         // Initialiser le WifiManager
-        //scanResults = new ArrayList<ScanResult>();
-        scanResults = null; // juste pour voir
+        scanResults = null;
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
 
-        textBattery = (TextView) findViewById(R.id.textBattery);
+        textBattery = findViewById(R.id.textBattery);
         textBattery.setText(obtenirBattery(this));
 
         wifiScanReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
-                if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                    scanResults = wifiManager.getScanResults();
-                }
+            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+                scanResults = wifiManager.getScanResults();
+            }
             }
         };
 
         registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        //wifiManager.startScan();
 
         // Quand l'application se lance, les points d'accès à proximité sont détectés
         this.pointsAcces = detecterPointsAcces();
@@ -113,7 +114,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // placerMarkersSurCarte();
         favoris = new ArrayList<PointAcces>();
-        
+
+        // Initialiser des objets permenttant la sauvegarde des favoris
         gson = new Gson();
         sharedPreference = new SharedPreference(getApplicationContext());
     }
@@ -138,9 +140,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placerMarkersSurCarte();
 
         mMap.setOnMarkerClickListener(this);
-
-        // TODO
-        // ...
     }
 
     @Override
@@ -166,7 +165,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param donneesATransmettre
      * @param idConteneurFragment
      */
-    public void remplacerFragment(Fragment remplacant, Bundle donneesATransmettre, int idConteneurFragment)
+    public void remplacerFragment(Fragment remplacant, Bundle donneesATransmettre, int idConteneurFragment,
+                                  boolean addToBackStack)
     {
         // Passer les arguments au nouveau fragment (remplacant)
         remplacant.setArguments(donneesATransmettre);
@@ -178,7 +178,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Ajouter la transaction sur la pile de retour pour permettre
         // a l'usager de retourner a l'etat d'avant la transaction.
         // Prochain push j'essaie de tenir compte de ta remarque @Philippe
-        fragmentTransaction.addToBackStack(null);
+        if (addToBackStack)
+            fragmentTransaction.addToBackStack(null);
 
         // Tip: For each fragment transaction, you can apply a transition animation,
         // by calling setTransition() before you commit.
@@ -284,21 +285,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Recuperer le point d'acces selectionne
         PointAcces pointAcces = trouverPointAcces(pointsAcces, idPointAcces);
 
-        // Test
-//        Log.i("PointAcces", "onPointAccesSelected() position :" + idPointAcces);
-//        Log.i("PointAcces", pointsAcces.get(idPointAcces).toString());
-//        Log.i("PointAcces", "id :" + pointsAcces.get(idPointAcces).obtenirID());
-
         fragmentDetailsPointAcces = new FragmentDetailsPointAcces();
 
         // Assigner le point d'acces selectionne au fragment de details
         fragmentDetailsPointAcces.assignerPointAcces(pointAcces);
 
-        // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
-        remplacerFragment(this.fragmentDetailsPointAcces, null, R.id.conteneur_fragment_dynamique);
+        boolean addToBackStack = !(fragmentManager.getPrimaryNavigationFragment() instanceof FragmentDetailsPointAcces);
 
-        // Mettre les vues a jour pour ce nouveau point d'acces
-        // fragmentDetailsPointAcces.mettreVuesAJour();
+        // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
+        remplacerFragment(this.fragmentDetailsPointAcces, null,
+                R.id.conteneur_fragment_dynamique, addToBackStack);
     }
 
     /**
@@ -400,18 +396,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @return
      */
     static String obtenirBattery(Context context) {
-            Intent batteryIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            if(batteryIntent != null) {
-                int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+        Intent batteryIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if(batteryIntent != null) {
+            int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-                if (level > -1 && scale > 0) {
-                    return Float.toString(((float) level / (float) scale) * 100.0f);
-                }
+            if (level > -1 && scale > 0) {
+                return Float.toString(((float) level / (float) scale) * 100.0f);
             }
+        }
 
         return null;
     }
+
+    // Permet de traquer les fragments empiles sur le backstack
+    //private List<Fragment> fragmentsEmpiles = null;
 
     public void onFavorisClick(View view)
     {
@@ -420,9 +419,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Assigner le point d'acces selectionne au fragment de details
         fragmentFavoris.assignerPointsAccesFavoris(obtenirListFromSharedPreference());
 
-        // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
-        remplacerFragment(this.fragmentFavoris, null, R.id.conteneur_fragment_dynamique);
+//        boolean addToBackStack = true;
+//        for (Fragment fragmentEmpile : fragmentsEmpiles) {
+//            if (fragmentEmpile instanceof FragmentFavoris) {
+//                addToBackStack = false;
+//                break;
+//            }
+//        }
 
+        boolean addToBackStack = !(fragmentManager.getPrimaryNavigationFragment() instanceof FragmentFavoris);
+
+        // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
+        remplacerFragment(this.fragmentFavoris, null,
+                R.id.conteneur_fragment_dynamique, addToBackStack);
     }
 
 }
