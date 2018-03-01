@@ -3,7 +3,7 @@ package com.example.mounia.tp1;
 import android.graphics.Path;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
-import  com.android.settings.wifi.AccessPointState;
+//import  com.android.settings.wifi.AccessPointState;
 
 /**
  * Created by passenger on 2/15/2018.
