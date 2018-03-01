@@ -1,0 +1,23 @@
+
+
+onCreate(android.os.Bundle savedInstanceState)
+	detecterPointsAcces()
+	obtenirBattery(android.content.Context context))
+
+onResume() 
+
+onMapReady(com.google.android.gms.maps.GoogleMap googleMap)
+	placerMarkersSurCarte()
+		pointAccesToMarkerOptions(com.example.mounia.tp1.PointAcces pa)
+obtenirDirection(int idPointAcces
+onMarkerClick(com.google.android.gms.maps.model.Marker marker)
+
+ajouterAuxFavoris(int idPointAcces)
+enleverDesFavoris(int idPointAcces)
+partager(int idPointAcces)
+
+obtenirListFromSharedPreference()
+
+onPointAccesSelected(int idPointAcces)
+	trouverPointAcces(ArrayList<PointAcces> pointsAcces, int idPointAcces)
+	remplacerFragment(android.support.v4.app.Fragment remplacant, android.os.Bundle donneesATransmettre, int idConteneurFragment)
