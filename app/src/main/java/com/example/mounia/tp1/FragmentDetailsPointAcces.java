@@ -148,7 +148,7 @@ public class FragmentDetailsPointAcces extends Fragment {
 
         // Initialiser la vue pour obtenir un chemin parmi ceux les plus courts
         // entre la position actuelle et ce point d'acces
-        vueObtenirDirection = new Button(activity);
+       /* vueObtenirDirection = new Button(activity);
         vueObtenirDirection.setText("Obtenir direction");
         vueObtenirDirection.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +156,7 @@ public class FragmentDetailsPointAcces extends Fragment {
                 mListener.obtenirDirection(1); // essai
             }
         });
-        vueBoutons.addView(vueObtenirDirection);
+        vueBoutons.addView(vueObtenirDirection);*/
         return vueBoutons;
     }
 

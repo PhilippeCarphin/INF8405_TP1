@@ -234,9 +234,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private MarkerOptions pointAccesToMarkerOptions(PointAcces pa){
         MarkerOptions mo;
 
-        double distance = 25;
-        double dx = distance * rand.nextDouble();
-        double dy = distance * rand.nextDouble();
+        double distance = 10;
+        double dx = distance * (rand.nextDouble() - 0.5);
+        double dy = distance * (rand.nextDouble() - 0.5);
 
         LatLng coords = new LatLng(45.5017 + dx, -73.5673 + dy);
 
