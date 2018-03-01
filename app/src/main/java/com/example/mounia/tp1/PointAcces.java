@@ -1,7 +1,9 @@
 package com.example.mounia.tp1;
 
 import android.graphics.Path;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
+import  com.android.settings.wifi.AccessPointState;
 
 /**
  * Created by passenger on 2/15/2018.
@@ -13,9 +15,6 @@ public class PointAcces
     private int id;
     private static int compteur = 0;
 
-    // Permet de savoir si ce point d'acces est un favori directement
-    private boolean estFavori;
-
     // Le nom du réseau	écrit dans un format simple.
     private String ssid;
 
@@ -25,47 +24,49 @@ public class PointAcces
     // L’intensité du signal reçu
     private int rssi;
 
-    // TODO : Une description claire du mécanisme d’authentification, de la	gestion	des	clés et	du
+    // Permet de savoir si ce point d'acces est un favori directement
+    private boolean estFavori;
+
+    // Une description claire du mécanisme d’authentification, de la	gestion	des	clés et	du
     // schéma de chiffrement pris en charge	par	le point d’accès (WEP, WPA etc…).
-    // ...
+    private String capabilities;
 
     // Est-ce la même chose que le ssid?
-    private String nomEmplacement;
+    //private String nomEmplacement;
 
     // Catégorie d'hotspot. Cette information vous l'obtiendrez à l'aide
     // d'une méthode de la classe Wifi manager
     private boolean avecMotDePasse; // couleur rouge, sans mot de passe -> couleur verte
 
-    // Constructeur
-    public PointAcces(WifiInfo wifiInfo)
+    // Constructeur qui prend un ScanResult
+    // ref : https://developer.android.com/reference/android/net/wifi/WifiManager.html#getScanResults()
+    public PointAcces(ScanResult scanResult)
     {
-        // TODO : Inititialiser le id avec un outil tel que UUID
-        // ...
-        this.id = compteur++;
+        // TODO : Inititialiser le id avec un outil tel que UUID...
+        this.id = compteur;
+        compteur++;
 
-        // Intercepter un wifi info null et retourner.  Possiblement on devrait changer le constructeur
-        // Selon ce que j'ai lu, c'est wifiManager.getScanResults() qu'il faudrait utiliser.
-        // ref : https://developer.android.com/reference/android/net/wifi/WifiManager.html#getScanResults()
-        if(wifiInfo == null){
-            this.ssid = "ssid";
-            this.bssid = "bssid";
-            this.avecMotDePasse = true;
-            return;
-        }
+        // Philippe : Intercepter un ScanResult null et retourner.
+        // Reph : C'est possible d'intercepter en effet. Toutefois, ici, il semble qu'il nous
+        // faut les infos et donc scanResult ne doit pas etre null. Donc, ca devrait crash
+        // pour qu'on decouvre ce bug avant la sortie du programme en production.
+        // => Utilisation d'un assert serait bien.
+        if (scanResult == null)
+            throw new NullPointerException("ScanResult is null");
 
         // Initialiser le nom du reseau, l'adresse MAC et l'intensite du signal recu
-        this.ssid  = wifiInfo.getSSID();
-        this.bssid = wifiInfo.getBSSID();
-        this.rssi  = wifiInfo.getRssi();
+        this.ssid  = scanResult.SSID;
+        this.bssid = scanResult.BSSID;
+        this.rssi  = scanResult.level;
 
         // Initialement, ce n'est pas un favori
         estFavori = false;
 
-        // TODO : Initialiser la variable pour le mecanisme d'authentification
-        // ...
+        // Est protege par mot de passe ou non?
+       // this.avecMotDePasse = AccessPointState.getScanResultSecurity(scanResult) != AccessPointState.OPEN; // TODO : recuperer la bonne info
 
-        // TODO : Initialiser les autres attributs
-        // ...
+        // Describes the authentication, key management, and encryption schemes supported by the access point.
+        this.capabilities = scanResult.capabilities;
     }
 
     public int obtenirID() { return this.id; }
@@ -83,11 +84,11 @@ public class PointAcces
         return null;
     }
 
-    public void assignerNomEmplacement(String nomEmplacement) {
-        this.nomEmplacement = nomEmplacement;
-    }
-
-    public String obtenirNomEmplacement() { return this.nomEmplacement; }
+//    public void assignerNomEmplacement(String nomEmplacement) {
+//        this.nomEmplacement = nomEmplacement;
+//    }
+//
+//    public String obtenirNomEmplacement() { return this.nomEmplacement; }
 
     public void assignerAcces(boolean avecMotDePasse) { this.avecMotDePasse = avecMotDePasse; }
 
@@ -104,6 +105,10 @@ public class PointAcces
     public void assignerRSSI(int rssi) { this.rssi = rssi; }
 
     public int obtenirRSSI() { return this.rssi; }
+
+    public String obtenirCapabilities() { return capabilities; }
+
+    public void assignerCapabilities(String capabilities) { this.capabilities = capabilities; }
 
     public String toString() { return "SSID=" + this.ssid + ", BSSID=" + this.bssid ;}
 }

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
 import android.widget.TextView;
 
 
@@ -80,7 +79,7 @@ public class FragmentDetailsPointAcces extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public View makeInfoView(String SSID, String BSSID, String RSSID, boolean acces){
+    public View makeInfoView(String SSID, String BSSID, String RSSI, String acces){
 
         LinearLayout vueInfo = new LinearLayout(activity);
         vueInfo.setBackgroundColor(0xffaabbcc);
@@ -102,13 +101,13 @@ public class FragmentDetailsPointAcces extends Fragment {
 
         // Ajouter la vue du rssi
         vueRSSI = new TextView(activity);
-        vueRSSI.setText("RSSI : " + RSSID);
+        vueRSSI.setText("RSSI : " + RSSI);
         vueInfo.addView(vueRSSI);
 
         // Ajouter la vue pour afficher si c'est avec ou sans mot de passe
         vueAcces = new TextView(activity);
-        String messageAcces = acces ? "Protege par mot de passe" : "Sans mot de passe";
-        vueAcces.setText(messageAcces);
+        //String messageAcces = acces ? "Protege par mot de passe" : "Sans mot de passe";
+        vueAcces.setText(acces);
         vueInfo.addView(vueAcces);
 
         return vueInfo;
@@ -165,7 +164,7 @@ public class FragmentDetailsPointAcces extends Fragment {
         // La vue a renvoyer par cette methode
         // RelativeLayout vuePrincipaleFragment = new RelativeLayout(activity);
 
-        // J'ai changé pour linearLayout juste pour voir les infos pour gosser.  Creer trois vues
+        // J'ai changé pour linearLayout juste pour voir les infos pour gosser. Creer trois vues
         // On pourrait faire de ces sous-vues des composantes reutilisables
         LinearLayout vuePrincipaleFragment = new LinearLayout(activity);
         vuePrincipaleFragment.setOrientation(LinearLayout.VERTICAL);
@@ -175,13 +174,15 @@ public class FragmentDetailsPointAcces extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT)
         );
 
-
         // NB: Si le point d'acces n'a pas ete assigne avant cette methode
         // alors il faut que ca crash
         if (pointAcces == null)
             throw new NullPointerException("Point d'acces n'est pas initialise");
 
-        vuePrincipaleFragment.addView(makeInfoView(pointAcces.obtenirSSID(), pointAcces.obtenirBSSID(), pointAcces.obtenirBSSID(), pointAcces.estProtegeParMotDePasse()));
+//        vuePrincipaleFragment.addView(makeInfoView(pointAcces.obtenirSSID(), pointAcces.obtenirBSSID(),
+//                pointAcces.obtenirBSSID(), pointAcces.estProtegeParMotDePasse()));
+        vuePrincipaleFragment.addView(makeInfoView(pointAcces.obtenirSSID(), pointAcces.obtenirBSSID(),
+                pointAcces.obtenirBSSID(), pointAcces.obtenirCapabilities()));
 
         vuePrincipaleFragment.addView(makeButtonView());
 
@@ -193,13 +194,14 @@ public class FragmentDetailsPointAcces extends Fragment {
 
     // Mettre les vues a jour en fonctions des infos du point d'acces.
     // Doit etre appele a chaque fois qu'un nouveau point d'acces est assigne.
-    public void mettreVuesAJour() {
-        vueSSID.setText("SSID : " + pointAcces.obtenirSSID());
-        vueBSSID.setText("BSSID : " + pointAcces.obtenirBSSID());
-        vueRSSI.setText("RSSI : " + pointAcces.obtenirRSSI());
-        String messageAcces = pointAcces.estProtegeParMotDePasse() ? "Protege par mot de passe" : "Sans mot de passe";
-        vueAcces.setText(messageAcces);
-    }
+//    public void mettreVuesAJour() {
+//        vueSSID.setText("SSID : " + pointAcces.obtenirSSID());
+//        vueBSSID.setText("BSSID : " + pointAcces.obtenirBSSID());
+//        vueRSSI.setText("RSSI : " + pointAcces.obtenirRSSI());
+//        String messageAcces = pointAcces.estProtegeParMotDePasse() ? "Protege par mot de passe" : "Sans mot de passe";
+//        //vueAcces.setText(messageAcces);
+//        vueAcces.setText(pointAcces.obtenirCapabilities()); // juste pour voir
+//    }
 
     // Called when the fragment's activity has been created and this fragment's view hierarchy
     // instantiated. It can be used to do final initialization once these pieces are in place,
