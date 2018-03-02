@@ -357,7 +357,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (pointsAcces.get(i).obtenirID() == idPointAcces) {
 
                 // Ajouter ce point d'acces dans la liste de favoris
-                if (trouverPointAcces(favoris, idPointAcces) == null) {
+                //if (trouverPointAcces(favoris, idPointAcces) == null) {
                     // Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
                     pointsAcces.get(i).ajouterAuxFavoris();
 
@@ -366,7 +366,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // Ajouter ce point d'acces egalement dans les SharedPreferences
                     String jsonScore = gson.toJson(favoris);
                     sharedPreference.saveList(jsonScore);
-                }
+                //}
 
                 break;
             }

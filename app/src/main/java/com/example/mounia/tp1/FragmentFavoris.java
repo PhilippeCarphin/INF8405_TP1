@@ -116,7 +116,7 @@ public class FragmentFavoris extends ListFragment {
 
             // Remplir le tableau text
             for (int i = 0; i < pointsAcces.size(); i++) {
-                text[i] = pointsAcces.get(i).obtenirSSID() + " "+ pointsAcces.get(i).obtenirBSSID();
+                text[i] = pointsAcces.get(i).obtenirSSID();
 
                 // et profiter de ce parcours de boucle pour matcher les indices
                 // avec les ids des points d'acces
