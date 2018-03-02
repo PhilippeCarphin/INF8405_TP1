@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.support.v4.app.ListFragment;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,10 +81,11 @@ public class FragmentFavoris extends ListFragment {
 
         // Arrivé ici, la méthode assignerPointsAcces de ce fragment devrait déjà être
         // appelée. Si elle est null, on devrait découvrir le bug.
-        if (this.pointsAccesFavoris == null)
-            throw new NullPointerException("pointsAccesFavoris is null");
+//        if (this.pointsAccesFavoris == null)
+//            throw new NullPointerException("pointsAccesFavoris is null");
 
         List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
+
         for (int i = 0; i < this.pointsAccesFavoris.size(); i++) {
             HashMap<String, String> hm = new HashMap<String, String>();
             hm.put("image", Integer.toString(image[0]));

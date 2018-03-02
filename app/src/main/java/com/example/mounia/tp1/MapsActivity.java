@@ -427,24 +427,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onFavorisClick(View view)
     {
-        if (favoris == null)
-            throw new NullPointerException("favoris is null");
-
-        if (obtenirListFromSharedPreference() == null)
-            throw new NullPointerException("obtenirListFromSharedPreference returns null");
-
         fragmentFavoris = new FragmentFavoris();
 
         // Assigner le point d'acces selectionne au fragment de details
-        fragmentFavoris.assignerPointsAccesFavoris(obtenirListFromSharedPreference());
+        List<PointAcces> listFromShared = obtenirListFromSharedPreference();
+        if (listFromShared == null)
+            listFromShared = new ArrayList<>();
 
-//        boolean addToBackStack = true;
-//        for (Fragment fragmentEmpile : fragmentsEmpiles) {
-//            if (fragmentEmpile instanceof FragmentFavoris) {
-//                addToBackStack = false;
-//                break;
-//            }
-//        }
+        fragmentFavoris.assignerPointsAccesFavoris(listFromShared);
 
         boolean addToBackStack = !(fragmentManager.getPrimaryNavigationFragment() instanceof FragmentFavoris);
 
@@ -485,7 +475,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 fragmentFavoris.assignerPointsAccesFavoris(obtenirListFromSharedPreference());
                 remplacerFragment(fragmentFavoris, null,
                         R.id.conteneur_fragment_dynamique, false);
-
             }
         });
         builder.setNegativeButton("No", null);
