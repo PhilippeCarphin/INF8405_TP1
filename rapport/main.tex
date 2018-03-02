@@ -178,7 +178,26 @@
 
 	Les trois auteurs n'avaient pas d'expérience préalable avec le dévelopement
 	Android.  Nous avons donc eu une bonne mesure de difficultés.  Cette section
-	les énumère en détail.
+	les énumère en détail.  Notez la première sous-section qui liste les
+	défaillances de l'application telle qu'elle fut remise.
+
+\subsection{Défaillances de l'application remise}
+
+	\begin{description}
+		\item[Backstack]
+
+			Lorsque nous changeons le fragment de la barre de droite, nous
+			empilons l'ancien fragment sur le \og backstack\fg.  Lorsqu'on
+			appuie sur le bouton \og back\fg sur l'appareil, ceci nous ramène en
+			arrière au fragment précédent.  Par contre, si le \og backstack\fg\
+			est vide, et qu'on appuie sur \og back\fg, l'application plante.
+
+			Nous avons essayé la solution de fermer l'application lors de
+			l'appui du bouton \og back\fg\ mais ceci causait d'autres problèmes
+			à notre application qui auraient demandé un trop gros remaniement
+			pour le temps qui restait.
+
+	\end{description}
 
 \subsection{Conflits de versions}
 
@@ -263,6 +282,10 @@
 
 	Nous avons aussi approfondis nos connaissances sur les APIs de GoogleMaps et
 	WifiManager.
+
+	Nous aurions aimé régler le problême avec le \og backstack\fg\ si nous
+	avions eu plus de temps mais nous pourrons explorer ce problème plus en
+	détail dans le projet.
 
 \begin{raggedright}
 \bibliographystyle{apacite}
