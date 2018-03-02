@@ -132,8 +132,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         mMap = googleMap;
 
-
-
         placerMarqueurPoly();
 
         // Ces points d'accès doivent être placés sur la carte.
@@ -443,6 +441,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         // Start scan et recuperer une liste de points d'acces nouvellement detectee
         this.pointsAcces = detecterPointsAcces();
+
+        placerMarqueurPoly();
 
         // Enlever les anciens marqueurs
         enleverMarkersSurCarte();
