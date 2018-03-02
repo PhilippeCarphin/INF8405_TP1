@@ -14,6 +14,7 @@
 \title{a}
 \usepackage[final]{pdfpages}
 \newcommand\code[1]{\texttt{#1}}
+\newcommand{\interfacefigheight}{2in}
 
 \begin{document}
 \includepdf[pages=1]{page_titre.pdf}
@@ -32,13 +33,44 @@
 	classes que nous avons écrites pour l'application elle même.
 
 \subsection{Interface utilisateur}
-\newcommand{\interfacefigheight}{2in}
+
+	L'écran d'accueil présente trois zones.  La zone de carte géographique, la
+	barre du haut et la barre de droite (voir figure \ref{fig_start_screen}).
+	Initialement, la barre de droite présente une liste des réseaux disponible.
 
 	\begin{figure}[h]
 		\centering
 		\includegraphics[height=\interfacefigheight]{./interface/start_screen.jpg}
-		\caption{TODO}
-		\label{fig_}
+		\caption{\parbox[t]{3in}{Écran d'accueil de l'application}}
+		\label{fig_start_screen}
+	\end{figure}
+
+	Lorsqu'on clique soit sur un marqueur de la carte ou su un élément de la
+	liste de la barre de droite, les informations du point d'accès sélectionné
+	sont affichées dans la barre de droite (voir figure \ref{fig_select_marker}).
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[height=\interfacefigheight]{./interface/select_marker.jpg}
+		\caption{\parbox[t]{3in}{Cliquer sur un marqueur ou élément de la liste fait apparaître
+		les détails de celui-ci}}
+		\label{fig_select_marker}
+	\end{figure}
+
+	La barre de droite contient aussi des boutons pour ajouter le point d'accès
+	aux favoris ou le partager.  Le bouton partager permettra de partager sur
+	Facebook, Gmail ou un autre service installé sur notre appareil.
+
+	Le bouton Ajouter Aux Favoris permettra d'ajouter le point d'accès à une
+	liste de favoris.  Cette liste est accessible en cliquant sur le bouton
+	Favoris de la barre du haut.
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[height=\interfacefigheight]{./interface/show_favorites.jpg}
+		\caption{\parbox[t]{3in}{Cliquer sur un marqueur ou élément de la liste fait apparaître
+		les détails de celui-ci}}
+		\label{fig_favorites}
 	\end{figure}
 
 \subsection{Classes de librairie}
