@@ -45,6 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<ScanResult> scanResults;
 
     private GoogleMap mMap;
+    static private LatLng LAT_LNG_POLY = new LatLng(45.50, -73.61);
     private WifiManager wifiManager;
     private ArrayList<PointAcces> pointsAcces;
     private ArrayList<PointAcces> favoris;      // Liste de points d'acces favoris
@@ -131,16 +132,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng polytechnique = new LatLng(45.50, -73.61);
-        MarkerOptions markerPoly = new MarkerOptions().position(polytechnique).title("Position").snippet("École polytechnique");
-        markerPoly.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        mMap.addMarker(markerPoly);
+
+
+        placerMarqueurPoly();
 
         // Ces points d'accès doivent être placés sur la carte.
         placerMarkersSurCarte();
 
         mMap.setOnMarkerClickListener(this);
+    }
+
+    private void placerMarqueurPoly() {
+        MarkerOptions markerPoly = new MarkerOptions().position(LAT_LNG_POLY).title("Position").snippet("École polytechnique");
+        markerPoly.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mMap.addMarker(markerPoly);
     }
 
     @Override
@@ -239,7 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double dx = distance * (rand.nextDouble() - 0.5);
         double dy = distance * (rand.nextDouble() - 0.5);
 
-        LatLng coords = new LatLng(45.5017 + dx, -73.5673 + dy);
+        LatLng coords = new LatLng(LAT_LNG_POLY.latitude + dx, LAT_LNG_POLY.longitude + dy);
 
         mo = new MarkerOptions()
                 .position(coords)
