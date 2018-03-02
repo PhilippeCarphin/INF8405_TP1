@@ -57,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="3"
                 android:layout_weight="1"
+                android:onClick="onScanClick"
                 android:padding="5dp"
                 android:text="SCAN"
                 android:textColor="@color/colorPrimaryDark" />

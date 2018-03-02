@@ -79,7 +79,7 @@ public class FragmentDetailsPointAcces extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public View makeInfoView(String SSID, String BSSID, String RSSI, String acces){
+    public View makeInfoView(String SSID, String BSSID, int RSSI, String acces){
 
         LinearLayout vueInfo = new LinearLayout(activity);
         vueInfo.setBackgroundColor(getResources().getColor(R.color.colorWhite));
@@ -181,10 +181,8 @@ public class FragmentDetailsPointAcces extends Fragment {
         if (pointAcces == null)
             throw new NullPointerException("Point d'acces n'est pas initialise");
 
-//        vuePrincipaleFragment.addView(makeInfoView(pointAcces.obtenirSSID(), pointAcces.obtenirBSSID(),
-//                pointAcces.obtenirBSSID(), pointAcces.estProtegeParMotDePasse()));
         vuePrincipaleFragment.addView(makeInfoView(pointAcces.obtenirSSID(), pointAcces.obtenirBSSID(),
-                pointAcces.obtenirBSSID(), pointAcces.obtenirCapabilities()));
+                pointAcces.obtenirRSSI(), pointAcces.obtenirCapabilities()));
 
         vuePrincipaleFragment.addView(makeButtonView());
 
@@ -193,17 +191,6 @@ public class FragmentDetailsPointAcces extends Fragment {
 
         return vuePrincipaleFragment;
     }
-
-    // Mettre les vues a jour en fonctions des infos du point d'acces.
-    // Doit etre appele a chaque fois qu'un nouveau point d'acces est assigne.
-//    public void mettreVuesAJour() {
-//        vueSSID.setText("SSID : " + pointAcces.obtenirSSID());
-//        vueBSSID.setText("BSSID : " + pointAcces.obtenirBSSID());
-//        vueRSSI.setText("RSSI : " + pointAcces.obtenirRSSI());
-//        String messageAcces = pointAcces.estProtegeParMotDePasse() ? "Protege par mot de passe" : "Sans mot de passe";
-//        //vueAcces.setText(messageAcces);
-//        vueAcces.setText(pointAcces.obtenirCapabilities()); // juste pour voir
-//    }
 
     // Called when the fragment's activity has been created and this fragment's view hierarchy
     // instantiated. It can be used to do final initialization once these pieces are in place,
@@ -242,7 +229,5 @@ public class FragmentDetailsPointAcces extends Fragment {
         void ajouterAuxFavoris(int idPointAcces);
 
         void enleverDesFavoris(int idPointAcces);
-
-        Path.Direction obtenirDirection(int idPointAcces);
     }
 }

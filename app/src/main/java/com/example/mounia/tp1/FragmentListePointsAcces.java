@@ -41,12 +41,6 @@ public class FragmentListePointsAcces extends ListFragment
         // Required empty public constructor
     }
 
-    // Ne sert a rien !?
-  //  @Override
-//    public void onListItemClick(ListView l, View v, int positionItemClique, long id) {
-//        // Send the event to the host activity
-//       // mCallback.onfavorisSelected(positionItemClique);
-//    }
 
     // Container Activity must implement this interface
     public interface OnPointAccesSelectedListener {

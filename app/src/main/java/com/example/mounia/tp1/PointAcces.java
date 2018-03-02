@@ -3,6 +3,7 @@ package com.example.mounia.tp1;
 import android.graphics.Path;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 
 
 /**
@@ -31,15 +32,9 @@ public class PointAcces
     // schéma de chiffrement pris en charge	par	le point d’accès (WEP, WPA etc…).
     private String capabilities;
 
-    // Est-ce la même chose que le ssid?
-    //private String nomEmplacement;
-
     // Catégorie d'hotspot. Cette information vous l'obtiendrez à l'aide
     // d'une méthode de la classe Wifi manager
     private boolean avecMotDePasse; // couleur rouge, sans mot de passe -> couleur verte
-
-    // Constructeur qui prend un ScanResult
-    // ref : https://developer.android.com/reference/android/net/wifi/WifiManager.html#getScanResults()
 
     /**
      * Constructeur de base pour créer un PointAcces avec SSID, BSSID et RSSID et valeurs par défaut
@@ -56,7 +51,7 @@ public class PointAcces
 
         this.ssid = SSID;
         this.bssid = BSSID;
-        this.rssi = -1;
+        this.rssi = WifiManager.calculateSignalLevel(RSSI, 100);
         this.estFavori = false;
         this.capabilities = "";
         this.avecMotDePasse = false;
@@ -78,7 +73,6 @@ public class PointAcces
 
         PointAcces pa = new PointAcces(sr.SSID, sr.BSSID, sr.level);
 
-        pa.estFavori = false;
         pa.capabilities = sr.capabilities;
 
         return pa;

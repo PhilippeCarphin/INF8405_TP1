@@ -20,6 +20,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -34,6 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 /**
  * Cette classe est l'activité principale pour le projet.
  *
@@ -47,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<ScanResult> scanResults;
 
     private GoogleMap mMap;
+    static private LatLng LAT_LNG_POLY = new LatLng(45.50, -73.61);
     private WifiManager wifiManager;
     private ArrayList<PointAcces> pointsAcces;
     private ArrayList<PointAcces> favoris;      // Liste de points d'acces favoris
@@ -133,16 +139,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng polytechnique = new LatLng(45.50, -73.61);
-        MarkerOptions markerPoly = new MarkerOptions().position(polytechnique).title("Position").snippet("École polytechnique");
-
-        mMap.addMarker(markerPoly);
+        placerMarqueurPoly();
 
         // Ces points d'accès doivent être placés sur la carte.
         placerMarkersSurCarte();
 
         mMap.setOnMarkerClickListener(this);
+
+        mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(LAT_LNG_POLY , 14.0f) );
+    }
+
+    private void placerMarqueurPoly() {
+        MarkerOptions markerPoly = new MarkerOptions().position(LAT_LNG_POLY).title("Position").snippet("École polytechnique");
+        markerPoly.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mMap.addMarker(markerPoly);
     }
 
     @Override
@@ -208,21 +218,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(scanResults.size() == 0){
             pointAccesDetectes = noScanResultsFallback();
         }
-        // Juste pour tester
-        for(PointAcces pa : pointAccesDetectes) {
-            Log.i("wifi", pa.toString());
-        }
 
         return pointAccesDetectes;
     }
 
     public ArrayList<PointAcces> noScanResultsFallback(){
         ArrayList<PointAcces> fallback = new ArrayList<>(10);
-        fallback.add(new PointAcces("It Hurts when IP", "00-14-22-01-23-45", 2));
-        fallback.add(new PointAcces("PolyFab", "00-99-22-01-23-45", 2));
-        fallback.add(new PointAcces("Sur le pont d'Avignon", "00-14-22-01-23-45", 2));
-        fallback.add(new PointAcces("I'm pretty fly for a WiFi", "00-14-22-01-23-45", 2));
-        fallback.add(new PointAcces("BELL451", "00-14-22-01-23-45", 2));
+        fallback.add(new PointAcces("It Hurts when IP", "00-14-22-01-23-45", 80));
+        fallback.add(new PointAcces("PolyFab", "00-99-22-01-23-45", 100));
+        fallback.add(new PointAcces("Sur le pont d'Avignon", "00-14-22-01-23-45", 60));
+        fallback.add(new PointAcces("I'm pretty fly for a WiFi", "00-14-22-01-23-45", 5));
+        fallback.add(new PointAcces("BELL451", "00-14-22-01-23-45", 50));
         return fallback;
     }
 
@@ -236,16 +242,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private MarkerOptions pointAccesToMarkerOptions(PointAcces pa){
         MarkerOptions mo;
+        double maxRSSI = 100;
+        double facteur = 0.0005;
+        double angle = 2 * 3.1415 * rand.nextDouble();
+        if(pa.obtenirRSSI() == 0)
+            return null;
+        double distance = facteur * (maxRSSI / (double) pa.obtenirRSSI());
+        double facteur_aleatoire = 1 + .15 * (rand.nextDouble()-.5);
+        distance *= facteur_aleatoire;
+        double dx = distance * cos(angle);
+        double dy = distance * sin(angle);
 
-        double distance = 10;
-        double dx = distance * (rand.nextDouble() - 0.5);
-        double dy = distance * (rand.nextDouble() - 0.5);
-
-        LatLng coords = new LatLng(45.5017 + dx, -73.5673 + dy);
+        LatLng coords = new LatLng(LAT_LNG_POLY.latitude + dx, LAT_LNG_POLY.longitude + dy);
 
         mo = new MarkerOptions()
                 .position(coords)
-                .title("Wifi Hotspot " + pa.toString());
+                .title("Wifi Hotspot " + pa.obtenirSSID());
 
         return mo;
     }
@@ -258,28 +270,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Ce comportement n'est pas bloqué.
      */
     public boolean onMarkerClick(Marker marker){
-        int id;
+        int id = 0;
         try {
             id = (Integer) marker.getTag();
+            onPointAccesSelected(id);
         } catch (NullPointerException e) {
-            Log.i("NULLPTR", "Getting integer is fucked up");
-            id = 0;
+            // Si le marqueur n'a pas d'ID, c'est que c'est le marqueur de l'emplacement de POLY
+            // On ne fait pas d'onPointAccesSelected.
         }
-        //Log.i("MAP MARKER", "MARKER CLICKED : Number " + String.valueOf(id));
-        //onFavorisSelected(id);
         return false;
     }
 
     public void placerMarkersSurCarte()
     {
-        // TODO : placer des markers pour les points d'accès détectés sur la carte
-        // ...
+        // Placer des markers pour les points d'accès détectés sur la carte
         for(PointAcces pa : pointsAcces){
             MarkerOptions mo = pointAccesToMarkerOptions(pa);
-
-            Marker m = mMap.addMarker(mo);
-            m.setTag(Integer.valueOf(pa.obtenirID()));
+            if(mo != null) {
+                Marker m = mMap.addMarker(mo);
+                m.setTag(Integer.valueOf(pa.obtenirID()));
+            }
         }
+    }
+
+    public void enleverMarkersSurCarte()
+    {
+        mMap.clear();
     }
 
     /**
@@ -310,7 +326,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
         remplacerFragment(this.fragmentDetailsPointAcces, null,
-                R.id.conteneur_fragment_dynamique, addToBackStack);
+                R.id.conteneur_fragment_dynamique, true);
     }
 
     /**
@@ -321,13 +337,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void partager(int idPointAcces) {
-        Intent sharingnIntent = new Intent(Intent.ACTION_SEND);
-        sharingnIntent.setType("text/plain");
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
         String shareBodyText = pointsAcces.get(idPointAcces).obtenirSSID();
-        sharingnIntent.putExtra(Intent.EXTRA_SUBJECT,"WIFI Gratuit");
-        sharingnIntent.putExtra(Intent.EXTRA_TEXT,shareBodyText);
-        startActivity(Intent.createChooser(sharingnIntent,"partager par"));
-
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT,"WIFI SSID");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT,shareBodyText);
+        startActivity(Intent.createChooser(sharingIntent,"partager par"));
     }
 
     /**
@@ -336,21 +351,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void ajouterAuxFavoris(int idPointAcces) {
-        // Test, enlever le Toast suivant une fois que cette fonction peut etre convoquee
-       // Toast.makeText(this, "Ajouter point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
 
-        // TODO : Chercher dans la liste pointsAcces le point d'acces ayant l'id
-        for(int i = 0; i< pointsAcces.size(); i++) {
+        // Chercher dans la liste pointsAcces le point d'acces ayant l'id
+        for (int i = 0; i < pointsAcces.size(); i++) {
             if (pointsAcces.get(i).obtenirID() == idPointAcces) {
-                // TODO : Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
+
+                // Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
                 pointsAcces.get(i).ajouterAuxFavoris();
-                // TODO : Ajouter ce point d'acces dans la liste de favoris
+
+                // Ajouter ce point d'acces dans la liste de favoris
                 favoris.add(pointsAcces.get(i));
 
-                // TODO : Ajouter ce point d'acces egalement dans les SharedPreferences
+                // Ajouter ce point d'acces egalement dans les SharedPreferences
                 String jsonScore = gson.toJson(favoris);
                 sharedPreference.saveList(jsonScore);
-
             }
         }
     }
@@ -360,11 +374,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Obtient un fragment FragmentListPointsAcces à partir des shared preferences
      */
     public ArrayList<PointAcces> obtenirListFromSharedPreference() {
-        //retrieve data from shared preference
         String jsonScore = sharedPreference.getList();
         Type type = new TypeToken<List<PointAcces>>(){}.getType();
         return gson.fromJson(jsonScore, type);
-
     }
 
     /**
@@ -387,23 +399,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // TODO : mettre à jour la liste dans les SharedPreferences
                 String jsonScore = gson.toJson(favoris);
                 sharedPreference.saveList(jsonScore);
-
             }
         }
-
-    }
-
-    /**
-     * TODO Doit trouver le chemin entre notre emplacement et l'emplacement du marqueur cliqué ou
-     * le marqueur dont on a demandé les directions avec le bouton get-directions.
-     * @param idPointAcces
-     * @return
-     */
-    @Override
-    public Path.Direction obtenirDirection(int idPointAcces) {
-        // TODO ...
-        // @Philippe
-        return null;
     }
 
     /**
@@ -430,6 +427,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onFavorisClick(View view)
     {
+        if (favoris == null)
+            throw new NullPointerException("favoris is null");
+
+        if (obtenirListFromSharedPreference() == null)
+            throw new NullPointerException("obtenirListFromSharedPreference returns null");
+
         fragmentFavoris = new FragmentFavoris();
 
         // Assigner le point d'acces selectionne au fragment de details
@@ -447,7 +450,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
         remplacerFragment(this.fragmentFavoris, null,
-                R.id.conteneur_fragment_dynamique, addToBackStack);
+                R.id.conteneur_fragment_dynamique, true);
+    }
+
+    public void onScanClick(View view)
+    {
+        // Start scan et recuperer une liste de points d'acces nouvellement detectee
+        this.pointsAcces = detecterPointsAcces();
+
+        // Enlever les anciens marqueurs
+        enleverMarkersSurCarte();
+
+        placerMarqueurPoly();
+
+        // Placer les marqueurs correspondants sur la carte
+        placerMarkersSurCarte();
     }
 
     private DialogInterface demanderEnleverFavori = null;
