@@ -205,10 +205,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(scanResults.size() == 0){
             pointAccesDetectes = noScanResultsFallback();
         }
-        // Juste pour tester
-        for(PointAcces pa : pointAccesDetectes) {
-            Log.i("wifi", pa.toString());
-        }
 
         return pointAccesDetectes;
     }
@@ -269,14 +265,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void placerMarkersSurCarte()
     {
-        // TODO : placer des markers pour les points d'accès détectés sur la carte
-        // ...
+        // Placer des markers pour les points d'accès détectés sur la carte
         for(PointAcces pa : pointsAcces){
             MarkerOptions mo = pointAccesToMarkerOptions(pa);
 
             Marker m = mMap.addMarker(mo);
             m.setTag(Integer.valueOf(pa.obtenirID()));
         }
+    }
+
+    public void enleverMarkersSurCarte()
+    {
+        mMap.clear();
     }
 
     /**
@@ -318,13 +318,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void partager(int idPointAcces) {
-        // FIXME : partager aussi le BSSID et autres infos pertinentes...
-        Intent sharingnIntent = new Intent(Intent.ACTION_SEND);
-        sharingnIntent.setType("text/plain");
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
         String shareBodyText = pointsAcces.get(idPointAcces).obtenirSSID();
-        sharingnIntent.putExtra(Intent.EXTRA_SUBJECT,"WIFI Gratuit");
-        sharingnIntent.putExtra(Intent.EXTRA_TEXT,shareBodyText);
-        startActivity(Intent.createChooser(sharingnIntent,"partager par"));
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT,"WIFI SSID");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT,shareBodyText);
+        startActivity(Intent.createChooser(sharingIntent,"partager par"));
     }
 
     /**
@@ -365,38 +364,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Juste pour permettre d'enlever, même si ce n'est pas dans l'énoncé
      * @param idPointAcces
      */
-//    @Override
-//    public void enleverDesFavoris(int idPointAcces) {
-//        // Test
-//        Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
-//
-//        // TODO : Faire les operations inverses qui se trouvent dans la fonction ajouterAuxFavoris
-//        for(int i = 0; i< pointsAcces.size(); i++) {
-//            if (pointsAcces.get(i).obtenirID() == idPointAcces) {
-//
-//                pointsAcces.get(i).enleverDesFavoris();
-//
-//                favoris.remove(pointsAcces.get(i));
-//
-//                // TODO : mettre à jour la liste dans les SharedPreferences
-//                String jsonScore = gson.toJson(pointsAcces);
-//                sharedPreference.saveList(jsonScore);
-//
-//            }
-//        }
-//    }
-
-    /**
-     * TODO Doit trouver le chemin entre notre emplacement et l'emplacement du marqueur cliqué ou
-     * le marqueur dont on a demandé les directions avec le bouton get-directions.
-     * @param idPointAcces
-     * @return
-     */
     @Override
-    public Path.Direction obtenirDirection(int idPointAcces) {
-        // TODO ...
-        // @Philippe
-        return null;
+    public void enleverDesFavoris(int idPointAcces) {
+        // Test
+        Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
+
+        // TODO : Faire les operations inverses qui se trouvent dans la fonction ajouterAuxFavoris
+        for(int i = 0; i< pointsAcces.size(); i++) {
+            if (pointsAcces.get(i).obtenirID() == idPointAcces) {
+
+                pointsAcces.get(i).enleverDesFavoris();
+
+                favoris.remove(pointsAcces.get(i));
+
+                // TODO : mettre à jour la liste dans les SharedPreferences
+                String jsonScore = gson.toJson(pointsAcces);
+                sharedPreference.saveList(jsonScore);
+            }
+        }
     }
 
     /**
@@ -447,6 +432,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
         remplacerFragment(this.fragmentFavoris, null,
                 R.id.conteneur_fragment_dynamique, true);
+    }
+
+    public void onScanClick(View view)
+    {
+        // Start scan et recuperer une liste de points d'acces nouvellement detectee
+        this.pointsAcces = detecterPointsAcces();
+
+        // Enlever les anciens marqueurs
+        enleverMarkersSurCarte();
+
+        // Placer les marqueurs correspondants sur la carte
+        placerMarkersSurCarte();
     }
 
 }

@@ -228,6 +228,6 @@ public class FragmentDetailsPointAcces extends Fragment {
 
         void ajouterAuxFavoris(int idPointAcces);
 
-        Path.Direction obtenirDirection(int idPointAcces);
+        void enleverDesFavoris(int idPointAcces);
     }
 }
