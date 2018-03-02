@@ -143,7 +143,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setOnMarkerClickListener(this);
 
-        mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(LAT_LNG_POLY , 13.0f) );
+        mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(LAT_LNG_POLY , 14.0f) );
     }
 
     private void placerMarqueurPoly() {
@@ -239,10 +239,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private MarkerOptions pointAccesToMarkerOptions(PointAcces pa){
         MarkerOptions mo;
-
-        double facteur = 0.001;
+        double maxRSSI = 100;
+        double facteur = 0.0005;
         double angle = 2 * 3.1415 * rand.nextDouble();
-        double distance = facteur * pa.obtenirRSSI();
+        if(pa.obtenirRSSI() == 0)
+            return null;
+        double distance = facteur * (maxRSSI / (double) pa.obtenirRSSI());
+        double facteur_aleatoire = 1 + .15 * (rand.nextDouble()-.5);
+        distance *= facteur_aleatoire;
         double dx = distance * cos(angle);
         double dy = distance * sin(angle);
 
@@ -250,7 +254,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mo = new MarkerOptions()
                 .position(coords)
-                .title("Wifi Hotspot " + pa.toString());
+                .title("Wifi Hotspot " + pa.obtenirSSID());
 
         return mo;
     }
@@ -279,9 +283,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Placer des markers pour les points d'accès détectés sur la carte
         for(PointAcces pa : pointsAcces){
             MarkerOptions mo = pointAccesToMarkerOptions(pa);
-
-            Marker m = mMap.addMarker(mo);
-            m.setTag(Integer.valueOf(pa.obtenirID()));
+            if(mo != null) {
+                Marker m = mMap.addMarker(mo);
+                m.setTag(Integer.valueOf(pa.obtenirID()));
+            }
         }
     }
 

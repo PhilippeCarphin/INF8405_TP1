@@ -51,7 +51,7 @@ public class PointAcces
 
         this.ssid = SSID;
         this.bssid = BSSID;
-        this.rssi = WifiManager.calculateSignalLevel(RSSI, 4);
+        this.rssi = WifiManager.calculateSignalLevel(RSSI, 100);
         this.estFavori = false;
         this.capabilities = "";
         this.avecMotDePasse = false;
