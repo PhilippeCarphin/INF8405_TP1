@@ -9,6 +9,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[frenchb]{babel}
+\usepackage{float}
 
 \author{a}
 \title{a}
@@ -24,23 +25,37 @@
 
 \section{Introduction}
 
+	Dans le premier travail pratique d'informatique mobile, nous avons du
+	apprendre à trouver des points d'accès WiFi et le placer sur une carte
+	Google Map.
+
+	Pour ce faire, nous avons réalisé une application Android qui présente une
+	liste des points d'accès disponibles ainsi que leurs informations et offre
+	quelques autres fonctionnalités comme le partage et l'ajout de favoris.
+
+	Le rapport présente trois parties.  La présentation technique montre
+	l'interface de l'application et décrit son fonctionnement interne.  Les
+	sections suivantes présentent des difficultés rencontrées et des critiques
+	et suggestions.
+
 \section{Présentation technique}
 
 	Dans cette section nous présentons, d'une part, l'interface de notre
-	application et ensuite les diverses classes et modules impliqués dans
-	l'application.  Premièrement, nous présentons quelques classes de librairies
-	importantes utilisées par l'application.  Ensuite, nous présentons les
-	classes que nous avons écrites pour l'application elle même.
+	application.  Ensuite, nous présentons quelques classes de librairies
+	importantes utilisées par l'application.  Finalement, nous présentons
+	les classes que nous avons écrites pour l'application elle même.
 
 \subsection{Interface utilisateur}
 
 	L'écran d'accueil présente trois zones.  La zone de carte géographique, la
 	barre du haut et la barre de droite (voir figure \ref{fig_start_screen}).
-	Initialement, la barre de droite présente une liste des réseaux disponible.
+	Initialement, la barre de droite présente une liste des réseaux
+	disponibles.  Cette liste peut être mise à jour en cliquant sur le
+	bouton scan.
 
 	\begin{figure}[h]
 		\centering
-		\includegraphics[height=\interfacefigheight]{./interface/start_screen.jpg}
+		\includegraphics[height=\interfacefigheight]{./interface/start_screen.png}
 		\caption{\parbox[t]{3in}{Écran d'accueil de l'application}}
 		\label{fig_start_screen}
 	\end{figure}
@@ -51,9 +66,9 @@
 
 	\begin{figure}[h]
 		\centering
-		\includegraphics[height=\interfacefigheight]{./interface/select_marker.jpg}
-		\caption{\parbox[t]{3in}{Cliquer sur un marqueur ou élément de la liste fait apparaître
-		les détails de celui-ci}}
+		\includegraphics[height=\interfacefigheight]{./interface/select_marker.png}
+		\caption{\parbox[t]{3in}{Cliquer sur un marqueur ou élément de la liste
+		fait apparaître les détails de celui-ci}}
 		\label{fig_select_marker}
 	\end{figure}
 
@@ -67,9 +82,9 @@
 
 	\begin{figure}[h]
 		\centering
-		\includegraphics[height=\interfacefigheight]{./interface/show_favorites.jpg}
-		\caption{\parbox[t]{3in}{Cliquer sur un marqueur ou élément de la liste fait apparaître
-		les détails de celui-ci}}
+		\includegraphics[height=\interfacefigheight]{./interface/show_favorites.png}
+		\caption{\parbox[t]{3in}{Cliquer sur le bouton Favoris montre la liste
+		des favoris}}
 		\label{fig_favorites}
 	\end{figure}
 
@@ -148,11 +163,10 @@
 	détails du point d'accès ainsi que quelques boutons pour permettre des
 	actons.
 
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
-		\includegraphics[height=2.5in]{communication_diag.pdf}
-		\caption{Diagramme des interactions de sélection de point d'accès}
-		\label{fig_interaction}
+		\quad\includegraphics[height=2.5in]{communication_diag.pdf}
+		\parbox[t]{4in}{\caption{Diagramme des interactions de sélection de point d'accès}\label{fig_interaction}}
 	\end{figure}
 
 	% Lorsqu'un marqueur est cliqué, la fonction de rappel \code{onMarkerClick()}
@@ -179,12 +193,13 @@
 	permettent d'utiliser d'anciennes classes lorsqu'on en a besoin.
 
 	Par contre, étant donné notre inexpérience avec Android, nous avons du
-	recourir à des tutoriels en-ligne.  La solution donnée par un tutoriel ne
-	fonctionne qu'avec les fragments de type  \code{android.app.Fragment} alors
-	tout va on change le \code{import} au début du fichier.
+	recourir à des tutoriels en-ligne.  Il est arrivé souvent que solution
+	donnée par un tutoriel ne fonctionne qu'avec les fragments de type
+	\code{android.app.Fragment} alors on change le \code{import} au début du
+	fichier.
 
 	Mais hélas, ceci cause des erreurs dans des bouts de code déjà écrits qui,
-	sans qu'on le sache, utilisent des fragments de
+	sans qu'on le sache, utilisent des fragments de type
 	\code{android.support.v4.app.Fragment}.
 
 	Heureusement, l'IDE Android Studio est très bon pour nous montrer ces
@@ -197,12 +212,60 @@
 	distribuer les marqueurs aléatoirement autour de l'emplacement de
 	l'usager.
 
+\subsection{Méthodes de cycle de vie}
 
+	Une des difficultés majeure de l'apprentissage d'Android est la
+	compréhension des méthodes de cycle de vie des activités et fragments.
 
 \section{Critiques et suggestions}
-\section{Conclusion}
-Example citation: \citeA{google}.
 
+	Voici quelques critiques et suggestions pour ce travail pratique.  D'une
+	part, il serait bien inviter les étudiants à lire de la documentation de
+	base avant de commencer. Ensuite, on pourrait considérer d'autres
+	plateformes de développement. Et finalement, laisser plus de liberté quant à
+	la façon d'implémenter l'application.
+
+\subsection{Documentation suggérée}
+
+	La documentation suggérée s'adresse à des gens qui sont déjà familiers avec
+	le fonctionnement d'Andoid.  Nous avons fait l'erreur de croire qu'elle
+	serait suffisante.  Nous avons donc commencé à coder notre application avec
+	une compréhension déficiente.  Ceci a mené à une architecture mal conçue.
+	Nous aurions du commencer par lire quelque guides de la page Android
+	Developer Guides \citeA{androidDevGuides}.
+
+	Par exemple, nous avons consulté les guides Android Lifecycle Methods
+	\citeA{androidLifecycle} et Android Fragments Guide \citeA{androidFragments}
+	mais nous avons consulté ces guides après avoir écrit beaucoup de code.
+
+	Il aurait été bien de conseiller fortement aux étudiants impatients de
+	commencer par ces guides.
+
+\subsection{Plateforme de développement}
+
+	Il aurait été intéressant de permettre d'utiliser d'autres plateformes comme
+	React-Native ou Xamarin pour le développement de l'application.  Nous
+	comprenons que la chargée de laboratoire doit être familière avec la
+	plateforme utilisée pour pouvoir corriger notre TP donc il est normal que
+	cette suggestion ne puisse pas être prise en compte.
+
+\subsection{Fragments}
+
+	Pour des néophytes d'Android, l'utilisation de fragments est plutôt
+	difficile à apprendre.  Il aurait été peut-être plus facile de réaliser
+	l'application demandée en utilisant plusieurs activités.
+
+\section{Conclusion}
+
+	Dans ce TP nous avons acquis beaucoup de connaissances sur le fonctionnement
+	d'Android.  Les erreurs qui nous ont causé du trouble ne serons pas répétées
+	dans la prochaine application.
+
+	Nous avons aussi approfondis nos connaissances sur les APIs de GoogleMaps et
+	WifiManager.
+
+\begin{raggedright}
 \bibliographystyle{apacite}
 \bibliography{bibdb}
+\end{raggedright}
 \end{document}
