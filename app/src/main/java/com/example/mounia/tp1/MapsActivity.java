@@ -345,7 +345,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void ajouterAuxFavoris(int idPointAcces) {
 
         // Chercher dans la liste pointsAcces le point d'acces ayant l'id
-        for(int i = 0; i< pointsAcces.size(); i++) {
+        for (int i = 0; i < pointsAcces.size(); i++) {
             if (pointsAcces.get(i).obtenirID() == idPointAcces) {
 
                 // Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
@@ -450,10 +450,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Start scan et recuperer une liste de points d'acces nouvellement detectee
         this.pointsAcces = detecterPointsAcces();
 
-        placerMarqueurPoly();
-
         // Enlever les anciens marqueurs
         enleverMarkersSurCarte();
+
+        placerMarqueurPoly();
 
         // Placer les marqueurs correspondants sur la carte
         placerMarkersSurCarte();
