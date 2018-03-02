@@ -38,7 +38,10 @@ public class FragmentFavoris extends ListFragment {
     private ListView listFragmentListView = null;
 
     // Permet de passer des messages à l'activité parent de ce fragment
-    private FragmentListePointsAcces.OnPointAccesSelectedListener mCallback = null;
+    private FragmentFavoris.OnFavorisSelectedListener mCallback = null;
+
+    // Permet de correspondre les indices de la liste vue aux ids des points d'acces
+    private Map<Integer, Integer> indicesEtIdPointsAcces = null;
 
     public FragmentFavoris() {
         // Required empty public constructor
@@ -46,8 +49,8 @@ public class FragmentFavoris extends ListFragment {
 
 
     // Container Activity must implement this interface
-    public interface OnPointAccesSelectedListener {
-        void onPointAccesSelected(int idPointAcces);
+    public interface OnFavorisSelectedListener {
+        void onFavorisSelected(int idPointAcces);
     }
 
     @Override
@@ -58,12 +61,12 @@ public class FragmentFavoris extends ListFragment {
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
-      /*  try {
-            mCallback = (FragmentListePointsAcces.OnPointAccesSelectedListener) activity;
+        try {
+            mCallback = (OnFavorisSelectedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnHeadlineSelectedListener");
-        }*/
+                    + " must implement OnFavorisSelectedListener");
+        }
     }
 
     @Override
@@ -107,7 +110,7 @@ public class FragmentFavoris extends ListFragment {
 
             // Initialiser text et la table de correspondance d'indices de la liste et des ids de points d'acces
             text = new String[pointsAcces.size()];
-           // indicesEtIdPointsAcces = new HashMap<>();
+            indicesEtIdPointsAcces = new HashMap<>();
 
             // Remplir le tableau text
             for (int i = 0; i < pointsAcces.size(); i++) {
@@ -115,7 +118,7 @@ public class FragmentFavoris extends ListFragment {
 
                 // et profiter de ce parcours de boucle pour matcher les indices
                 // avec les ids des points d'acces
-               // indicesEtIdPointsAcces.put(i, pointsAcces.get(i).obtenirID());
+                indicesEtIdPointsAcces.put(i, pointsAcces.get(i).obtenirID());
             }
         }
     }
@@ -135,7 +138,7 @@ public class FragmentFavoris extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Passer le message a l'activite parent
-               // mCallback.onPointAccesSelected(indicesEtIdPointsAcces.get(position));
+                mCallback.onFavorisSelected(indicesEtIdPointsAcces.get(position));
             }
         });
     }

@@ -1,7 +1,9 @@
 package com.example.mounia.tp1;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Path;
@@ -38,7 +40,8 @@ import java.util.Random;
  * @author Reph Dauphin Mombrun, Mounia Nordine, Philippe Carphin
  */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-        FragmentListePointsAcces.OnPointAccesSelectedListener, FragmentDetailsPointAcces.OnDetailsInteractionListener
+        FragmentListePointsAcces.OnPointAccesSelectedListener, FragmentDetailsPointAcces.OnDetailsInteractionListener,
+        FragmentFavoris.OnFavorisSelectedListener
 {
     private BroadcastReceiver wifiScanReceiver;
     private List<ScanResult> scanResults;
@@ -249,7 +252,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Fonction de rappel pour le click d'un marqueur.  On extrait le ID du point d'accès et on
-     * signale la sélection du point d'accès en passant le ID à onPointAccesSelected().
+     * signale la sélection du point d'accès en passant le ID à onfavorisSelected().
      * @param marker le marqueur cliqué
      * @return booléen spécifiant si oui ou non on veut bloquer le comportement par défaut.
      * Ce comportement n'est pas bloqué.
@@ -262,8 +265,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i("NULLPTR", "Getting integer is fucked up");
             id = 0;
         }
-        Log.i("MAP MARKER", "MARKER CLICKED : Number " + String.valueOf(id));
-        onPointAccesSelected(id);
+        //Log.i("MAP MARKER", "MARKER CLICKED : Number " + String.valueOf(id));
+        //onFavorisSelected(id);
         return false;
     }
 
@@ -371,18 +374,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void enleverDesFavoris(int idPointAcces) {
         // Test
-        Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
 
         // TODO : Faire les operations inverses qui se trouvent dans la fonction ajouterAuxFavoris
         for(int i = 0; i< pointsAcces.size(); i++) {
             if (pointsAcces.get(i).obtenirID() == idPointAcces) {
 
-                pointsAcces.get(i).enleverDesFavoris();
+               // favoris.get(i).enleverDesFavoris();
 
                 favoris.remove(pointsAcces.get(i));
 
                 // TODO : mettre à jour la liste dans les SharedPreferences
-                String jsonScore = gson.toJson(pointsAcces);
+                String jsonScore = gson.toJson(favoris);
                 sharedPreference.saveList(jsonScore);
 
             }
@@ -445,6 +448,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Remplacer le fragment de liste de points d'acces par celui des infos du point d'acces selectionne
         remplacerFragment(this.fragmentFavoris, null,
                 R.id.conteneur_fragment_dynamique, addToBackStack);
+    }
+
+    private DialogInterface demanderEnleverFavori = null;
+
+    @Override
+    public void onFavorisSelected(int idPointAcces) {
+
+        // Recuperer le point d'acces selectionne
+        final PointAcces pointAcces = trouverPointAcces(pointsAcces, idPointAcces);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("voulez vous supprimer ce point d'acces de la liste des favoris?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                enleverDesFavoris(pointAcces.obtenirID());
+                fragmentFavoris = new FragmentFavoris();
+                fragmentFavoris.assignerPointsAccesFavoris(obtenirListFromSharedPreference());
+                remplacerFragment(fragmentFavoris, null,
+                        R.id.conteneur_fragment_dynamique, false);
+
+            }
+        });
+        builder.setNegativeButton("No", null);
+        builder.show();
+
     }
 
 }

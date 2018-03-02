@@ -42,11 +42,11 @@ public class FragmentListePointsAcces extends ListFragment
     }
 
     // Ne sert a rien !?
-    @Override
-    public void onListItemClick(ListView l, View v, int positionItemClique, long id) {
-        // Send the event to the host activity
-        mCallback.onPointAccesSelected(positionItemClique);
-    }
+  //  @Override
+//    public void onListItemClick(ListView l, View v, int positionItemClique, long id) {
+//        // Send the event to the host activity
+//       // mCallback.onfavorisSelected(positionItemClique);
+//    }
 
     // Container Activity must implement this interface
     public interface OnPointAccesSelectedListener {
@@ -65,7 +65,7 @@ public class FragmentListePointsAcces extends ListFragment
             mCallback = (OnPointAccesSelectedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnHeadlineSelectedListener");
+                    + " must implement OnFavorisSelectedListener");
         }
     }
 
