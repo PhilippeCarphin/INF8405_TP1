@@ -356,15 +356,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < pointsAcces.size(); i++) {
             if (pointsAcces.get(i).obtenirID() == idPointAcces) {
 
-                // Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
-                pointsAcces.get(i).ajouterAuxFavoris();
-
                 // Ajouter ce point d'acces dans la liste de favoris
-                favoris.add(pointsAcces.get(i));
+                if (trouverPointAcces(favoris, idPointAcces) == null) {
+                    // Une fois trouve, mettre l'attribut estFavori de ce point d'acces a vrai
+                    pointsAcces.get(i).ajouterAuxFavoris();
 
-                // Ajouter ce point d'acces egalement dans les SharedPreferences
-                String jsonScore = gson.toJson(favoris);
-                sharedPreference.saveList(jsonScore);
+                    favoris.add(pointsAcces.get(i));
+
+                    // Ajouter ce point d'acces egalement dans les SharedPreferences
+                    String jsonScore = gson.toJson(favoris);
+                    sharedPreference.saveList(jsonScore);
+                }
+
+                break;
             }
         }
     }
@@ -385,10 +389,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void enleverDesFavoris(int idPointAcces) {
-        // Test
-        //Toast.makeText(this, "Enlever point acces : " + idPointAcces, Toast.LENGTH_SHORT).show();
 
-        // TODO : Faire les operations inverses qui se trouvent dans la fonction ajouterAuxFavoris
+        // Faire les operations inverses qui se trouvent dans la fonction ajouterAuxFavoris
         for(int i = 0; i< pointsAcces.size(); i++) {
             if (pointsAcces.get(i).obtenirID() == idPointAcces) {
 

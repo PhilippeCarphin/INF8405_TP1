@@ -1,6 +1,7 @@
 package com.example.mounia.tp1;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -74,8 +75,8 @@ public class FragmentListePointsAcces extends ListFragment
 
         // Arrivé ici, la méthode assignerPointsAcces de ce fragment devrait déjà être
         // appelée. Si elle est null, on devrait découvrir le bug.
-        if (this.pointsAccesDetectes == null)
-            throw new NullPointerException("pointsAccesDetectes is null");
+//        if (this.pointsAccesDetectes == null)
+//            throw new NullPointerException("pointsAccesDetectes is null");
 
         List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < this.pointsAccesDetectes.size(); i++) {
@@ -126,6 +127,8 @@ public class FragmentListePointsAcces extends ListFragment
 
         // Recuperer la ListView associee a ce fragment
         listFragmentListView = getListView();
+
+        listFragmentListView.setBackgroundColor(Color.rgb(255, 255, 255));
 
         // Associer un observateur aux selections d'items de la liste
         listFragmentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
