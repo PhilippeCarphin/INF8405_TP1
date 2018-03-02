@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,6 +33,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 /**
  * Cette classe est l'activité principale pour le projet.
@@ -138,6 +142,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placerMarkersSurCarte();
 
         mMap.setOnMarkerClickListener(this);
+
+        mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(LAT_LNG_POLY , 13.0f) );
     }
 
     private void placerMarqueurPoly() {
@@ -215,11 +221,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public ArrayList<PointAcces> noScanResultsFallback(){
         ArrayList<PointAcces> fallback = new ArrayList<>(10);
-        fallback.add(new PointAcces("It Hurts when IP", "00-14-22-01-23-45", 2));
-        fallback.add(new PointAcces("PolyFab", "00-99-22-01-23-45", 2));
-        fallback.add(new PointAcces("Sur le pont d'Avignon", "00-14-22-01-23-45", 2));
-        fallback.add(new PointAcces("I'm pretty fly for a WiFi", "00-14-22-01-23-45", 2));
-        fallback.add(new PointAcces("BELL451", "00-14-22-01-23-45", 2));
+        fallback.add(new PointAcces("It Hurts when IP", "00-14-22-01-23-45", 80));
+        fallback.add(new PointAcces("PolyFab", "00-99-22-01-23-45", 100));
+        fallback.add(new PointAcces("Sur le pont d'Avignon", "00-14-22-01-23-45", 60));
+        fallback.add(new PointAcces("I'm pretty fly for a WiFi", "00-14-22-01-23-45", 5));
+        fallback.add(new PointAcces("BELL451", "00-14-22-01-23-45", 50));
         return fallback;
     }
 
@@ -234,9 +240,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private MarkerOptions pointAccesToMarkerOptions(PointAcces pa){
         MarkerOptions mo;
 
-        double distance = 10;
-        double dx = distance * (rand.nextDouble() - 0.5);
-        double dy = distance * (rand.nextDouble() - 0.5);
+        double facteur = 0.001;
+        double angle = 2 * 3.1415 * rand.nextDouble();
+        double distance = facteur * pa.obtenirRSSI();
+        double dx = distance * cos(angle);
+        double dy = distance * sin(angle);
 
         LatLng coords = new LatLng(LAT_LNG_POLY.latitude + dx, LAT_LNG_POLY.longitude + dy);
 
