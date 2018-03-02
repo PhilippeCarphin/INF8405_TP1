@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -140,6 +141,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placerMarkersSurCarte();
 
         mMap.setOnMarkerClickListener(this);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(LAT_LNG_POLY));
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
     }
 
     private void placerMarqueurPoly() {
